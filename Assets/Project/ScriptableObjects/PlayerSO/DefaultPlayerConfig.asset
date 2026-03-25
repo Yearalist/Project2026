@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6967d97bc6b468247b9194c37c0de259, type: 3}
+  m_Name: DefaultPlayerConfig
+  m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Player.Data.PlayerConfig
+  MoveSpeed: 7
+  RotationSpeed: 100
+  JumpForce: 12
+  DoubleJumpForce: 9
+  Gravity: -25
+  CoyoteTime: 0.12
+  JumpBufferTime: 0.1
+  SlideDuration: 0.45
+  SlideSpeed: 14
+  SlideCooldown: 0.5
+  SlideColliderHeight: 0.8
+  NormalColliderHeight: 2
+  NormalColliderCenterY: 0
+  SlideColliderCenterY: -0.6
+  MaxHealth: 100
