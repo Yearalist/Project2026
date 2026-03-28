@@ -1,4 +1,6 @@
-﻿namespace ToySiege.Player.States
+﻿
+
+namespace ToySiege.Player.States
 {
     public class PlayerStateFactory
     {
@@ -10,13 +12,10 @@
         }
 
         public PlayerIdleState Idle() => new(_ctx, this);
-        public PlayerRunState Run() => new(_ctx, this);
+        public PlayerWalkState Walk() => new(_ctx, this);       
+        public PlayerSprintState Sprint() => new(_ctx, this);   
         public PlayerJumpState Jump() => new(_ctx, this);
         public PlayerDoubleJumpState DoubleJump() => new(_ctx, this);
         public PlayerSlideState Slide() => new(_ctx, this);
-
-        // ── İleride eklenecek state'ler ──
-        // public PlayerAttackState Attack() => new(_ctx, this);
-        // public PlayerDashState Dash() => new(_ctx, this);
     }
 }

@@ -1,4 +1,5 @@
-﻿using ToySiege.Core.FSM;
+﻿
+using ToySiege.Core.FSM;
 
 namespace ToySiege.Player.States
 {

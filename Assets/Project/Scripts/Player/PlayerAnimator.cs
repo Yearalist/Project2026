@@ -1,3 +1,4 @@
+ï»¿
 using UnityEngine;
 
 namespace ToySiege.Player
@@ -7,7 +8,7 @@ namespace ToySiege.Player
         private Animator _animator;
         private bool _hasAnimator;
 
-        // Animator parametre hash'leri (string yerine int — performans)
+        
         private static readonly int IsRunning = Animator.StringToHash("IsRunning");
         private static readonly int IsGrounded = Animator.StringToHash("IsGrounded");
         private static readonly int JumpTrigger = Animator.StringToHash("Jump");
@@ -22,8 +23,8 @@ namespace ToySiege.Player
             _hasAnimator = _animator != null;
 
             if (!_hasAnimator)
-                Debug.Log("<color=yellow>[PlayerAnimator] Animator bulunamadý — " +
-                          "debug modda çalýþýlýyor. Model eklendiðinde otomatik çalýþacak.</color>");
+                Debug.Log("<color=yellow>[PlayerAnimator] Animator bulunamadÄ± â€” " +
+                          "debug modda Ã§alÄ±ÅŸÄ±lÄ±yor. Model eklendiÄŸinde otomatik Ã§alÄ±ÅŸacak.</color>");
         }
 
         public void SetRunning(bool isRunning)

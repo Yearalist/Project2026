@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿
+
+using UnityEngine;
+using ToySiege.Core.FSM;
 
 namespace ToySiege.Player.States
 {
@@ -22,34 +25,20 @@ namespace ToySiege.Player.States
                 Ctx.Config.SlideColliderHeight,
                 Ctx.Config.SlideColliderCenterY
             );
+
+            // YENİ — Slide hız patlaması + iz efekti
+            Ctx.VFX.PlaySlideBurst();
         }
 
         public override void Execute()
         {
-            // Base class zaten CheckTransitions()'ı burada otomatik çağırıyor, 
-            // sadece timer'ı düşmemiz yeterli.
             _timer -= Time.deltaTime;
-
-            // Base.Execute() çağırırsan CheckTransitions() otomatik çalışır 
-            // (Base class koduna göre öyle görünüyor)
             base.Execute();
-        }
-
-        // İŞTE EKSİK OLAN VE HATAYA SEBEP OLAN KISIM BURASI:
-        protected override void CheckTransitions()
-        {
-            if (_timer <= 0f)
-            {
-                var nextState = Ctx.Input.MoveInput.sqrMagnitude > 0.01f
-                    ? (PlayerBaseState)Factory.Run()
-                    : Factory.Idle();
-
-                Ctx.FSM.ChangeState(nextState);
-            }
         }
 
         public override void FixedExecute()
         {
+            Ctx.HandleMouseRotation();
             Vector3 velocity = _slideDirection * Ctx.Config.SlideSpeed;
             Ctx.SetHorizontalVelocity(velocity);
             Ctx.ApplyGravity();
@@ -62,8 +51,27 @@ namespace ToySiege.Player.States
                 Ctx.Config.NormalColliderHeight,
                 Ctx.Config.NormalColliderCenterY
             );
-
             Ctx.StartSlideCooldown();
+
+            // YENİ — Slide iz efektini durdur
+            Ctx.VFX.StopSlideTrail();
+        }
+
+        protected override void CheckTransitions()
+        {
+            if (_timer > 0f) return;
+
+            if (Ctx.Input.MoveInput.sqrMagnitude > 0.01f)
+            {
+                if (Ctx.Input.SprintHeld)
+                    Ctx.FSM.ChangeState(Factory.Sprint());
+                else
+                    Ctx.FSM.ChangeState(Factory.Walk());
+            }
+            else
+            {
+                Ctx.FSM.ChangeState(Factory.Idle());
+            }
         }
     }
 }

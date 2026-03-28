@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿
+
+using UnityEngine;
+using ToySiege.Core.FSM;
 
 namespace ToySiege.Player.States
 {
@@ -11,12 +14,9 @@ namespace ToySiege.Player.States
         {
             Debug.Log("<color=magenta>→ STATE: Double Jump</color>");
             Ctx.Anim.TriggerDoubleJump();
-
-            // İkinci zıplama kuvveti
             Ctx.SetVerticalVelocity(Ctx.Config.DoubleJumpForce);
-
-            // Hakkı tüket — artık havada bir daha zıplayamaz
             Ctx.ConsumeDoubleJump();
+            Ctx.VFX.StopFootDust();      
         }
 
         public override void Execute()
@@ -27,6 +27,7 @@ namespace ToySiege.Player.States
 
         public override void FixedExecute()
         {
+            Ctx.HandleMouseRotation();
             Ctx.HandleAirMovement();
             Ctx.ApplyGravity();
             Ctx.MoveCharacter();
@@ -34,14 +35,17 @@ namespace ToySiege.Player.States
 
         protected override void CheckTransitions()
         {
-            // Tek çıkış: yere iniş
-            // Double jump'tan sonra tekrar zıplama YOK (GDD kuralı)
             if (Ctx.IsGrounded && Ctx.VerticalVelocity <= 0f)
             {
-                var nextState = Ctx.Input.MoveInput.sqrMagnitude > 0.01f
-                    ? (PlayerBaseState)Factory.Run()
-                    : Factory.Idle();
-                Ctx.FSM.ChangeState(nextState);
+                if (Ctx.Input.MoveInput.sqrMagnitude > 0.01f)
+                {
+                    if (Ctx.Input.SprintHeld)
+                        Ctx.FSM.ChangeState(Factory.Sprint());
+                    else
+                        Ctx.FSM.ChangeState(Factory.Walk());
+                }
+                else
+                    Ctx.FSM.ChangeState(Factory.Idle());
             }
         }
     }

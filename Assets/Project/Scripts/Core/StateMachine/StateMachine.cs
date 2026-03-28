@@ -1,3 +1,5 @@
+ï»¿
+
 using System;
 
 namespace ToySiege.Core.FSM
@@ -8,13 +10,13 @@ namespace ToySiege.Core.FSM
         public IState PreviousState { get; private set; }
 
         /// <summary>
-        /// State değiştiğinde tetiklenir. Debug için çok faydalı.
+        /// State deÄŸiÅŸtiÄŸinde tetiklenir. Debug iÃ§in Ã§ok faydalÄ±.
         /// </summary>
         public event Action<IState, IState> OnStateChanged;
 
         /// <summary>
-        /// İlk state'i belirler. Oyun başladığında bir kez çağrılır.
-        /// Genelde Idle state ile başlatılır.
+        /// Ä°lk state'i belirler. Oyun baÅŸladÄ±ÄŸÄ±nda bir kez Ã§aÄŸrÄ±lÄ±r.
+        /// Genelde Idle state ile baÅŸlatÄ±lÄ±r.
         /// </summary>
         public void Initialize(IState startingState)
         {
@@ -23,8 +25,8 @@ namespace ToySiege.Core.FSM
         }
 
         /// <summary>
-        /// Yeni state'e geçiş yapar.
-        /// Aynı state'e tekrar geçmeyi engeller (gereksiz Enter/Exit önlenir).
+        /// Yeni state'e geÃ§iÅŸ yapar.
+        /// AynÄ± state'e tekrar geÃ§meyi engeller (gereksiz Enter/Exit Ã¶nlenir).
         /// </summary>
         public void ChangeState(IState newState)
         {
@@ -40,7 +42,7 @@ namespace ToySiege.Core.FSM
         }
 
         /// <summary>
-        /// PlayerController.Update() içinden çağrılır.
+        /// PlayerController.Update() iÃ§inden Ã§aÄŸrÄ±lÄ±r.
         /// </summary>
         public void Update()
         {
@@ -48,7 +50,7 @@ namespace ToySiege.Core.FSM
         }
 
         /// <summary>
-        /// PlayerController.FixedUpdate() içinden çağrılır.
+        /// PlayerController.FixedUpdate() iÃ§inden Ã§aÄŸrÄ±lÄ±r.
         /// </summary>
         public void FixedUpdate()
         {

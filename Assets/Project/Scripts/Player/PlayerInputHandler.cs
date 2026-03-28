@@ -1,39 +1,26 @@
-﻿using UnityEngine;
+﻿
+
+using UnityEngine;
 
 namespace ToySiege.Player
 {
     public class PlayerInputHandler : MonoBehaviour
     {
-        // ── Dışarıya açılan temiz property'ler ──
-        // State'ler bunları okur
-
-        /// <summary>
-        /// WASD / Sol Stick → Vector2 (x: sağ-sol, y: ileri-geri)
-        /// </summary>
+        // ── Hareket ──
         public Vector2 MoveInput { get; private set; }
 
-        /// <summary>
-        /// Space basıldı mı? (tek seferlik — okunduktan sonra sıfırlanır)
-        /// </summary>
+        // ── Mouse (raw delta — hassasiyet PlayerConfig'de) ──
+        public float MouseX { get; private set; }
+
+        // ── Aksiyonlar ──
         public bool JumpPressed => ConsumeAction(ref _jumpPressed);
-
-        /// <summary>
-        /// Left Ctrl basıldı mı? (tek seferlik)
-        /// </summary>
         public bool SlidePressed => ConsumeAction(ref _slidePressed);
-
-        /// <summary>
-        /// Sol Mouse tuşu basıldı mı? (tek seferlik)
-        /// İleride saldırı sistemi için kullanılacak
-        /// </summary>
         public bool AttackPressed => ConsumeAction(ref _attackPressed);
 
-        /// <summary>
-        /// Mouse X/Y hareketi (kamera kontrolü için)
-        /// </summary>
-        public Vector2 LookInput { get; private set; }
+        // ── Sprint ──
+        public bool SprintHeld { get; private set; }
 
-        // ── Dahili değişkenler ──
+        // ── Dahili ──
         private bool _jumpPressed;
         private bool _slidePressed;
         private bool _attackPressed;
@@ -41,44 +28,37 @@ namespace ToySiege.Player
         private void Update()
         {
             ReadMovement();
+            ReadMouse();
             ReadActions();
-            ReadLook();
         }
 
         private void ReadMovement()
         {
-            // WASD → Vector2
-            float h = Input.GetAxisRaw("Horizontal"); // A/D
-            float v = Input.GetAxisRaw("Vertical");   // W/S
+            float h = Input.GetAxisRaw("Horizontal");
+            float v = Input.GetAxisRaw("Vertical");
             MoveInput = new Vector2(h, v).normalized;
+        }
+
+        private void ReadMouse()
+        {
+            
+            MouseX = Input.GetAxis("Mouse X");
         }
 
         private void ReadActions()
         {
-            // GetKeyDown = sadece basıldığı frame'de true
+            SprintHeld = Input.GetKey(KeyCode.LeftShift);
+
             if (Input.GetKeyDown(KeyCode.Space))
                 _jumpPressed = true;
 
             if (Input.GetKeyDown(KeyCode.LeftControl))
                 _slidePressed = true;
 
-            if (Input.GetMouseButtonDown(0)) // Sol tık
+            if (Input.GetMouseButtonDown(0))
                 _attackPressed = true;
         }
 
-        private void ReadLook()
-        {
-            LookInput = new Vector2(
-                Input.GetAxis("Mouse X"),
-                Input.GetAxis("Mouse Y")
-            );
-        }
-
-        /// <summary>
-        /// Bir action'ı okur ve hemen sıfırlar.
-        /// Bu sayede bir tuş basışı sadece BİR KEZ tüketilir.
-        /// Örnek: JumpPressed okundu → true döndü → artık false.
-        /// </summary>
         private bool ConsumeAction(ref bool action)
         {
             if (!action) return false;

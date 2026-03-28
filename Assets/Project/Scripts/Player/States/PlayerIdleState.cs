@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿
+
+using UnityEngine;
+using ToySiege.Core.FSM;
 
 namespace ToySiege.Player.States
 {
@@ -11,31 +14,32 @@ namespace ToySiege.Player.States
         {
             Debug.Log("<color=white>→ STATE: Idle</color>");
             Ctx.Anim.SetIdle();
-            // Yatay hızı sıfırla (yavaşça durma)
             Ctx.SetHorizontalVelocity(Vector3.zero);
+            Ctx.IsSprinting = false;
+            Ctx.VFX.StopFootDust();    // YENİ — dururken toz yok
         }
 
         public override void FixedExecute()
         {
+            Ctx.HandleMouseRotation();
             Ctx.ApplyGravity();
             Ctx.MoveCharacter();
         }
 
         protected override void CheckTransitions()
         {
-            // Öncelik sırası önemli!
-
-            // 1. Zıplama kontrolü
             if (Ctx.Input.JumpPressed && Ctx.IsGrounded)
             {
                 Ctx.FSM.ChangeState(Factory.Jump());
                 return;
             }
 
-            // 2. Hareket kontrolü
             if (Ctx.Input.MoveInput.sqrMagnitude > 0.01f)
             {
-                Ctx.FSM.ChangeState(Factory.Run());
+                if (Ctx.Input.SprintHeld)
+                    Ctx.FSM.ChangeState(Factory.Sprint());
+                else
+                    Ctx.FSM.ChangeState(Factory.Walk());
             }
         }
     }
