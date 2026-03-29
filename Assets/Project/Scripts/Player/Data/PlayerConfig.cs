@@ -1,6 +1,4 @@
-﻿
-
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ToySiege.Player.Data
 {
@@ -8,17 +6,11 @@ namespace ToySiege.Player.Data
     public class PlayerConfig : ScriptableObject
     {
         [Header("══ YÜRÜME / KOŞMA ══")]
-        [Tooltip("W tuşu ile yürüme hızı")]
         public float WalkSpeed = 4f;
-
-        [Tooltip("W + Shift ile koşma hızı")]
         public float SprintSpeed = 8f;
 
         [Header("══ MOUSE DÖNÜŞÜ ══")]
-        [Tooltip("Mouse hassasiyeti — cursor kilitliyken 300-500 arası iyi çalışır")]
         public float MouseRotationSpeed = 400f;
-
-        [Tooltip("Dönüşün yumuşaklığı (saniye). Düşük = keskin, Yüksek = yumuşak.\n0.05 = neredeyse anında\n0.1 = hafif smooth\n0.2 = belirgin smooth")]
         [Range(0.01f, 0.3f)]
         public float RotationSmoothTime = 0.08f;
 
@@ -33,10 +25,19 @@ namespace ToySiege.Player.Data
         public float SlideDuration = 0.45f;
         public float SlideSpeed = 14f;
         public float SlideCooldown = 0.5f;
-        public float SlideColliderHeight = 0.8f;
-        public float NormalColliderHeight = 2f;
-        public float NormalColliderCenterY = 1f;
-        public float SlideColliderCenterY = 0.4f;
+
+        [Header("══ COLLIDER (CharacterController) ══")]
+        [Tooltip("Normal duruşta collider yüksekliği — modelin boyuyla eşleş")]
+        public float NormalColliderHeight = 1.8f;
+
+        [Tooltip("Normal duruşta collider center Y — Height/2 olmalı")]
+        public float NormalColliderCenterY = 0.9f;
+
+        [Tooltip("Slide sırasında collider yüksekliği — en az 2*Radius (0.6) olmalı")]
+        public float SlideColliderHeight = 1.0f;
+
+        [Tooltip("Slide sırasında center Y — Height/2 olmalı ki alt kenar zeminde kalsın")]
+        public float SlideColliderCenterY = 0.5f;
 
         [Header("══ GENEL ══")]
         public float MaxHealth = 100f;

@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6967d97bc6b468247b9194c37c0de259, type: 3}
   m_Name: DefaultPlayerConfig
   m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Player.Data.PlayerConfig
-  MoveSpeed: 7
-  RotationSpeed: 100
+  WalkSpeed: 4
+  SprintSpeed: 8
+  MouseRotationSpeed: 400
+  RotationSmoothTime: 0.08
   JumpForce: 12
   DoubleJumpForce: 9
   Gravity: -25
@@ -22,8 +24,8 @@ MonoBehaviour:
   SlideDuration: 0.45
   SlideSpeed: 14
   SlideCooldown: 0.5
-  SlideColliderHeight: 0.8
-  NormalColliderHeight: 2
-  NormalColliderCenterY: 0
-  SlideColliderCenterY: -0.6
+  NormalColliderHeight: 1.9
+  NormalColliderCenterY: 0.8
+  SlideColliderHeight: 1
+  SlideColliderCenterY: 0.5
   MaxHealth: 100

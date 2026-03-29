@@ -1,6 +1,4 @@
-﻿
-
-using UnityEngine;
+﻿using UnityEngine;
 using ToySiege.Core.FSM;
 using ToySiege.Player.Data;
 using ToySiege.Player.States;
@@ -10,7 +8,7 @@ namespace ToySiege.Player
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(PlayerInputHandler))]
     [RequireComponent(typeof(PlayerAnimator))]
-    [RequireComponent(typeof(PlayerVFX))]              
+    [RequireComponent(typeof(PlayerVFX))]
     public class PlayerController : MonoBehaviour
     {
         [Header("Konfigürasyon")]
@@ -20,7 +18,7 @@ namespace ToySiege.Player
         public PlayerConfig Config => _config;
         public PlayerInputHandler Input { get; private set; }
         public PlayerAnimator Anim { get; private set; }
-        public PlayerVFX VFX { get; private set; }     
+        public PlayerVFX VFX { get; private set; }
         public StateMachine FSM { get; private set; }
 
         public bool IsGrounded => _cc.isGrounded;
@@ -42,7 +40,18 @@ namespace ToySiege.Player
             _cc = GetComponent<CharacterController>();
             Input = GetComponent<PlayerInputHandler>();
             Anim = GetComponent<PlayerAnimator>();
-            VFX = GetComponent<PlayerVFX>();           
+            VFX = GetComponent<PlayerVFX>();
+
+            // ── DEBUG: Animator kontrolü ──
+            var animator = GetComponentInChildren<Animator>();
+            if (animator == null)
+                Debug.LogError("[PlayerController] HATA: Animator BULUNAMADI! " +
+                    "Model objesi Player'ın CHILD'ı olmalı ve üzerinde Animator component olmalı.");
+            else if (animator.runtimeAnimatorController == null)
+                Debug.LogError("[PlayerController] HATA: Animator Controller ATANMAMIŞ! " +
+                    "Model objesindeki Animator'ın Controller slotuna PlayerAnimatorController sürükle.");
+            else
+                Debug.Log($"<color=green>[PlayerController] Animator OK: {animator.runtimeAnimatorController.name}</color>");
 
             FSM = new StateMachine();
             var factory = new PlayerStateFactory(this);
@@ -86,7 +95,7 @@ namespace ToySiege.Player
 
         private void FixedUpdate() => FSM.FixedUpdate();
 
-        // ── Mouse Rotation (Smooth) ──
+        // ── Mouse Rotation ──
         public void HandleMouseRotation()
         {
             float mouseX = Input.MouseX;
@@ -124,8 +133,10 @@ namespace ToySiege.Player
         // ── Fizik ──
         public void ApplyGravity()
         {
-            if (IsGrounded && _velocity.y < 0f) _velocity.y = -2f;
-            else _velocity.y += _config.Gravity * Time.fixedDeltaTime;
+            if (IsGrounded && _velocity.y < 0f)
+                _velocity.y = -2f;
+            else
+                _velocity.y += _config.Gravity * Time.fixedDeltaTime;
         }
 
         public void MoveCharacter() => _cc.Move(_velocity * Time.fixedDeltaTime);
@@ -140,10 +151,37 @@ namespace ToySiege.Player
 
         // ── Slide ──
         public void StartSlideCooldown() => _slideCooldownTimer = _config.SlideCooldown;
-        public void SetColliderHeight(float height, float centerY)
+
+        /// <summary>
+        /// Collider yüksekliğini GÜVENLİ şekilde değiştirir.
+        /// 
+        /// SORUN: Height küçültülürken capsule'ün alt noktası
+        /// zeminin altına inebilir → karakter düşer.
+        /// 
+        /// ÇÖZÜM: Önce yeni bottom pozisyonunu hesapla.
+        /// Eğer mevcut bottom'dan farklıysa, karakteri yukarı it
+        /// ki capsule'ün altı hep aynı yerde (zemin hizasında) kalsın.
+        /// </summary>
+        public void SetColliderHeight(float newHeight, float newCenterY)
         {
-            _cc.height = height;
-            _cc.center = new Vector3(0f, centerY, 0f);
+            // Mevcut capsule'ün alt noktası
+            float currentBottom = _cc.center.y - _cc.height / 2f;
+
+            // Yeni capsule'ün alt noktası
+            float newBottom = newCenterY - newHeight / 2f;
+
+            // Fark kadar karakteri yukarı/aşağı kaydır
+            float bottomDiff = currentBottom - newBottom;
+
+            // Önce height ve center'ı değiştir
+            _cc.height = newHeight;
+            _cc.center = new Vector3(0f, newCenterY, 0f);
+
+            // Sonra pozisyonu düzelt — capsule altı aynı yerde kalsın
+            if (Mathf.Abs(bottomDiff) > 0.01f)
+            {
+                transform.position += new Vector3(0f, bottomDiff, 0f);
+            }
         }
 
         // ── Yardımcı ──
@@ -162,11 +200,18 @@ namespace ToySiege.Player
 
         private void OnDrawGizmosSelected()
         {
+            if (_cc == null) return;
+
+            // CharacterController capsule'ünü görselleştir
+            Gizmos.color = Color.green;
+            Vector3 center = transform.position + _cc.center;
+            float halfHeight = _cc.height / 2f;
+            Gizmos.DrawWireSphere(center + Vector3.up * (halfHeight - _cc.radius), _cc.radius);
+            Gizmos.DrawWireSphere(center - Vector3.up * (halfHeight - _cc.radius), _cc.radius);
+
+            // İleri yön
             Gizmos.color = Color.blue;
             Gizmos.DrawRay(transform.position + Vector3.up, transform.forward * 2f);
-            Gizmos.color = Color.red;
-            Gizmos.DrawRay(transform.position + Vector3.up,
-                new Vector3(_velocity.x, 0, _velocity.z).normalized * 2f);
         }
     }
 }

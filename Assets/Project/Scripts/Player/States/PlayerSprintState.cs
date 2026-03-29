@@ -1,6 +1,4 @@
-﻿
-
-using UnityEngine;
+﻿using UnityEngine;
 using ToySiege.Core.FSM;
 
 namespace ToySiege.Player.States
@@ -13,9 +11,9 @@ namespace ToySiege.Player.States
         public override void Enter()
         {
             Debug.Log("<color=orange>→ STATE: Sprint</color>");
-            Ctx.Anim.SetRunning(true);
+            Ctx.Anim.SetSprinting();     // Speed → 2 (Blend Tree: Slow Run klip)
             Ctx.IsSprinting = true;
-            Ctx.VFX.StartSprintDust();   // YENİ — yoğun toz
+            Ctx.VFX.StartSprintDust();
         }
 
         public override void Execute()
@@ -33,8 +31,7 @@ namespace ToySiege.Player.States
 
         public override void Exit()
         {
-            Ctx.Anim.SetRunning(false);
-            Ctx.VFX.StopFootDust();      // YENİ
+            Ctx.VFX.StopFootDust();
         }
 
         protected override void CheckTransitions()

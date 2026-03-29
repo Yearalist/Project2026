@@ -1,6 +1,4 @@
-﻿
-
-using UnityEngine;
+﻿using UnityEngine;
 using ToySiege.Core.FSM;
 
 namespace ToySiege.Player.States
@@ -16,12 +14,14 @@ namespace ToySiege.Player.States
             Ctx.Anim.TriggerJump();
             Ctx.SetVerticalVelocity(Ctx.Config.JumpForce);
             Ctx.ResetDoubleJump();
-            Ctx.VFX.StopFootDust();      // YENİ — havada toz yok
+            Ctx.VFX.StopFootDust();
         }
 
         public override void Execute()
         {
             base.Execute();
+            // Animator'a dikey hız bilgisi gönder
+            // Falling Idle geçişi bunu kullanır (VerticalSpeed < -0.1)
             Ctx.Anim.SetVerticalSpeed(Ctx.VerticalVelocity);
         }
 
@@ -40,6 +40,9 @@ namespace ToySiege.Player.States
 
             if (Ctx.IsGrounded && Ctx.VerticalVelocity <= 0f)
             {
+                // Yere iniş animasyonu tetikle
+                Ctx.Anim.TriggerLanding();
+
                 if (Ctx.Input.MoveInput.sqrMagnitude > 0.01f)
                 {
                     if (Ctx.Input.SprintHeld)

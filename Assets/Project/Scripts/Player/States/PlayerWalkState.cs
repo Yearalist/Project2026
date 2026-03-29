@@ -1,6 +1,4 @@
-﻿
-
-using UnityEngine;
+﻿using UnityEngine;
 using ToySiege.Core.FSM;
 
 namespace ToySiege.Player.States
@@ -13,9 +11,9 @@ namespace ToySiege.Player.States
         public override void Enter()
         {
             Debug.Log("<color=white>→ STATE: Walk</color>");
-            Ctx.Anim.SetRunning(true);
+            Ctx.Anim.SetWalking();       // Speed → 1 (Blend Tree: Walking klip)
             Ctx.IsSprinting = false;
-            Ctx.VFX.StartWalkDust();    
+            Ctx.VFX.StartWalkDust();
         }
 
         public override void FixedExecute()
@@ -28,8 +26,7 @@ namespace ToySiege.Player.States
 
         public override void Exit()
         {
-            Ctx.Anim.SetRunning(false);
-            Ctx.VFX.StopFootDust();     
+            Ctx.VFX.StopFootDust();
         }
 
         protected override void CheckTransitions()
