@@ -24896,6 +24896,53 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!114 &1653864217 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4551769297899587037, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}
+  m_PrefabInstance: {fileID: 6425971829457783021}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653864212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73ebf3ffe627af04798334d18b6c1e2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Player.PlayerInputHandler
+--- !u!95 &1653864220
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653864212}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 940ac843c3eee9a44ae0f802807488c8, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1653864221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653864212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d658ff82700c2a469f1d37d6c36293a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  _animator: {fileID: 1653864220}
+  Input: {fileID: 1653864217}
 --- !u!1001 &1666816439
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31364,10 +31411,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: NewPlayer
       objectReference: {fileID: 0}
+    - target: {fileID: 5733413290838714499, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6347944868471376059, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 3a387095193f36f4f9d981107c99c076, type: 2}
+      objectReference: {fileID: 9100000, guid: 940ac843c3eee9a44ae0f802807488c8, type: 2}
     - target: {fileID: 7273121680510981426, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -31415,6 +31466,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4642559629835663329, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1653864213}
+    - targetCorrespondingSourceObject: {fileID: 4642559629835663329, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1653864221}
+    - targetCorrespondingSourceObject: {fileID: 4642559629835663329, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1653864220}
   m_SourcePrefab: {fileID: 100100000, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

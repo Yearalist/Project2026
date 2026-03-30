@@ -7,7 +7,7 @@ namespace ToySiege.Player
 {
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(PlayerInputHandler))]
-    [RequireComponent(typeof(PlayerAnimator))]
+    //[RequireComponent(typeof(PlayerAnimator))]
     [RequireComponent(typeof(PlayerVFX))]
     public class PlayerController : MonoBehaviour
     {
