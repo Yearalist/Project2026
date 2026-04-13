@@ -8,17 +8,18 @@ namespace ToySiege.Player.States
         public PlayerSprintState(PlayerController ctx, PlayerStateFactory factory)
             : base(ctx, factory) { }
 
-        public override void Enter()
-        {
-            Debug.Log("<color=orange>→ STATE: Sprint</color>");
-            Ctx.Anim.SetSprinting();     // Speed → 2 (Blend Tree: Slow Run klip)
-            Ctx.IsSprinting = true;
-            Ctx.VFX.StartSprintDust();
-        }
+      
 
         public override void Execute()
         {
             base.Execute();
+        }
+
+        public override void Enter()
+        {
+            Ctx.IsSprinting = true;
+            Ctx.Anim.SetSprinting(true);
+            Ctx.VFX.StartSprintDust();
         }
 
         public override void FixedExecute()
@@ -27,10 +28,12 @@ namespace ToySiege.Player.States
             Ctx.HandleSprintMovement();
             Ctx.ApplyGravity();
             Ctx.MoveCharacter();
+            Ctx.Anim.UpdateLocomotion(Ctx.Input.MoveInput, true);
         }
 
         public override void Exit()
         {
+            Ctx.Anim.SetSprinting(false);
             Ctx.VFX.StopFootDust();
         }
 

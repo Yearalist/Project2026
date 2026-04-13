@@ -4,22 +4,28 @@ namespace ToySiege.Player
 {
     public class PlayerAnimator : MonoBehaviour
     {
+        // PlayerAnimator.cs'e ekle
+        public Animator GetAnimator() => _animator;
         private Animator _animator;
         private bool _hasAnimator;
 
-        // ── Parametre Hash'leri (string lookup yerine int — performans) ──
-        private static readonly int Speed = Animator.StringToHash("Speed");
+        // ── Parametre Hash'leri ──
+        private static readonly int MoveX = Animator.StringToHash("moveX");
+        private static readonly int MoveY = Animator.StringToHash("moveY");
         private static readonly int IsGrounded = Animator.StringToHash("IsGrounded");
         private static readonly int VerticalSpd = Animator.StringToHash("VerticalSpeed");
+        private static readonly int IsSprinting = Animator.StringToHash("IsSprinting");
         private static readonly int JumpTrigger = Animator.StringToHash("Jump");
         private static readonly int DoubleJumpTrigger = Animator.StringToHash("DoubleJump");
         private static readonly int SlideTrigger = Animator.StringToHash("Slide");
         private static readonly int LandTrigger = Animator.StringToHash("Land");
 
-        // ── Smooth Damp (ani geçiş yerine yumuşak blend) ──
-        private float _currentSpeed;
-        private float _speedDampVelocity;
-        private const float SpeedDampTime = 0.15f;
+        // ── Smooth Damp ──
+        private float _currentMoveX;
+        private float _currentMoveY;
+        private float _dampVelX;
+        private float _dampVelY;
+        private const float DampTime = 0.12f;
 
         private void Awake()
         {
@@ -27,52 +33,50 @@ namespace ToySiege.Player
             _hasAnimator = _animator != null;
 
             if (!_hasAnimator)
-                Debug.LogWarning("[PlayerAnimator] Animator bulunamadı — " +
-                    "model child olarak eklendikten sonra otomatik çalışacak.");
+                Debug.LogWarning("[PlayerAnimator] Animator bulunamadı!");
         }
 
         // ═══════════════════════════════════════
-        // STATE'LER TARAFINDAN ÇAĞRILAN METODLAR
+        //  LOCOMOTION — Blend Tree'yi süren metod
         // ═══════════════════════════════════════
 
         /// <summary>
-        /// Idle state'ine geçiş. Speed → 0
+        /// Her frame çağır. moveInput = PlayerInputHandler.MoveInput (normalized).
+        /// isSprinting = true ise moveY değerini 1 yerine 2'ye çeker 
+        /// → Blend Tree'de Slow Run / Strafe kliplerini seçtirir.
+        /// </summary>
+        public void UpdateLocomotion(Vector2 moveInput, bool isSprinting)
+        {
+            if (!_hasAnimator) return;
+
+            // Sprint ise Y eksenini 2'ye scale et (Slow Run threshold'u)
+            float targetX = moveInput.x;
+            float targetY = moveInput.y;
+
+            if (isSprinting && moveInput.sqrMagnitude > 0.01f)
+            {
+                targetX *= 2f;
+                targetY *= 2f;
+            }
+
+            _currentMoveX = Mathf.SmoothDamp(_currentMoveX, targetX, ref _dampVelX, DampTime);
+            _currentMoveY = Mathf.SmoothDamp(_currentMoveY, targetY, ref _dampVelY, DampTime);
+
+            _animator.SetFloat(MoveX, _currentMoveX);
+            _animator.SetFloat(MoveY, _currentMoveY);
+        }
+
+        /// <summary>
+        /// Idle'a geçişte Blend Tree parametrelerini sıfırla.
         /// </summary>
         public void SetIdle()
         {
-            SetSpeed(0f);
+            UpdateLocomotion(Vector2.zero, false);
         }
 
-        /// <summary>
-        /// Walk state. Speed → 1
-        /// Blend Tree: 0-1 arası Idle→Walking geçişi
-        /// </summary>
-        public void SetWalking()
-        {
-            SetSpeed(1f);
-        }
-
-        /// <summary>
-        /// Sprint state. Speed → 2
-        /// Blend Tree: 1-2 arası Walking→Slow Run geçişi
-        /// </summary>
-        public void SetSprinting()
-        {
-            SetSpeed(2f);
-        }
-
-        /// <summary>
-        /// Eski SetRunning uyumluluğu (Walk state'i hâlâ bunu çağırıyor)
-        /// </summary>
-        public void SetRunning(bool isRunning)
-        {
-            // Walk/Sprint state'leri artık SetWalking/SetSprinting kullanacak
-            // ama eski state dosyaları güncellenmeden çalışsın diye:
-            if (isRunning)
-                SetSpeed(1f);
-            else
-                SetSpeed(0f);
-        }
+        // ═══════════════════════════════════════
+        //  BOOL / FLOAT PARAMETRELER
+        // ═══════════════════════════════════════
 
         public void SetGrounded(bool grounded)
         {
@@ -86,54 +90,51 @@ namespace ToySiege.Player
             _animator.SetFloat(VerticalSpd, speed);
         }
 
-        public void TriggerJump()
+        public void SetSprinting(bool sprinting)
         {
-            Debug.Log("<color=cyan>[Anim] Jump</color>");
-            if (_hasAnimator) _animator.SetTrigger(JumpTrigger);
+            if (!_hasAnimator) return;
+            _animator.SetBool(IsSprinting, sprinting);
+        }
+        // PlayerAnimator.cs'e ekle
+        public void SetRootMotion(bool enabled)
+        {
+            if (_hasAnimator) _animator.applyRootMotion = enabled;
         }
 
-        public void TriggerDoubleJump()
+
+
+        // ═══════════════════════════════════════
+        //  TRIGGER'LAR
+        // ═══════════════════════════════════════
+
+        public void TriggerJump()
         {
-            Debug.Log("<color=cyan>[Anim] Double Jump</color>");
-            if (_hasAnimator) _animator.SetTrigger(DoubleJumpTrigger);
+            if (_hasAnimator) _animator.SetTrigger(JumpTrigger);
         }
 
         public void TriggerSlide()
         {
-            Debug.Log("<color=green>[Anim] Slide</color>");
+            Debug.Log($"<color=green>[Anim] TriggerSlide çağrıldı. " +
+                      $"hasAnimator={_hasAnimator}, " +
+                      $"currentState={(_hasAnimator ? _animator.GetCurrentAnimatorStateInfo(0).shortNameHash.ToString() : "N/A")}</color>");
+
             if (_hasAnimator) _animator.SetTrigger(SlideTrigger);
         }
 
+        public void TriggerDoubleJump()
+        {
+            Debug.Log($"<color=magenta>[Anim] TriggerDoubleJump çağrıldı. " +
+                      $"hasAnimator={_hasAnimator}, " +
+                      $"currentState={(_hasAnimator ? _animator.GetCurrentAnimatorStateInfo(0).shortNameHash.ToString() : "N/A")}</color>");
+
+            if (_hasAnimator) _animator.SetTrigger(DoubleJumpTrigger);
+        }
+
+
+
         public void TriggerLanding()
         {
-            Debug.Log("<color=yellow>[Anim] Landing</color>");
             if (_hasAnimator) _animator.SetTrigger(LandTrigger);
-        }
-
-        public void TriggerAttack()
-        {
-            Debug.Log("<color=red>[Anim] Attack</color>");
-            // İleride attack animasyonu eklenince
-        }
-
-        // ═══════════════════════════════════════
-        // YARDIMCI
-        // ═══════════════════════════════════════
-
-        /// <summary>
-        /// Speed parametresini SmoothDamp ile yumuşak değiştirir.
-        /// Idle(0) → Walk(1) → Sprint(2) arasında keskin geçiş yerine
-        /// 0.15 saniyelik blend olur.
-        /// </summary>
-        private void SetSpeed(float target)
-        {
-            if (!_hasAnimator) return;
-
-            _currentSpeed = Mathf.SmoothDamp(
-                _currentSpeed, target,
-                ref _speedDampVelocity, SpeedDampTime
-            );
-            _animator.SetFloat(Speed, _currentSpeed);
         }
     }
 }

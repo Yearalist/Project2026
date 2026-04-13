@@ -11,7 +11,7 @@ namespace ToySiege.Player.States
         public override void Enter()
         {
             Debug.Log("<color=cyan>→ STATE: Jump</color>");
-            Ctx.Anim.TriggerJump();
+            Ctx.Anim.TriggerJump();              // ← TriggerDoubleJump DEĞİL
             Ctx.SetVerticalVelocity(Ctx.Config.JumpForce);
             Ctx.ResetDoubleJump();
             Ctx.VFX.StopFootDust();
@@ -20,8 +20,7 @@ namespace ToySiege.Player.States
         public override void Execute()
         {
             base.Execute();
-            // Animator'a dikey hız bilgisi gönder
-            // Falling Idle geçişi bunu kullanır (VerticalSpeed < -0.1)
+            // Bu değer Animator'da Jumping Up → Falling Idle geçişini tetikler
             Ctx.Anim.SetVerticalSpeed(Ctx.VerticalVelocity);
         }
 
@@ -35,13 +34,17 @@ namespace ToySiege.Player.States
 
         protected override void CheckTransitions()
         {
+            // Önce double jump kontrolü
             if (Ctx.Input.JumpPressed && Ctx.HasDoubleJump)
-            { Ctx.FSM.ChangeState(Factory.DoubleJump()); return; }
+            {
+                Ctx.FSM.ChangeState(Factory.DoubleJump());
+                return;
+            }
 
+            // Yere iniş — ÖNCE Landing trigger'ı at, SONRA state değiştir
             if (Ctx.IsGrounded && Ctx.VerticalVelocity <= 0f)
             {
-                // Yere iniş animasyonu tetikle
-                Ctx.Anim.TriggerLanding();
+                Ctx.Anim.TriggerLanding();  // Animator: Falling Idle → Falling To Landing
 
                 if (Ctx.Input.MoveInput.sqrMagnitude > 0.01f)
                 {

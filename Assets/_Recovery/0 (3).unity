@@ -4277,7 +4277,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0019999743, y: 2.9, z: -16.470001}
+  m_LocalPosition: {x: 0.0019999743, y: 2.9, z: -9.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -20904,11 +20904,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 1.9999998, z: 1.9999998}
   m_Center: {x: 0, y: 0, z: 0.9999999}
---- !u!4 &1421389275 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3563684084852844378, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}
-  m_PrefabInstance: {fileID: 6425971829457783021}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1431626851
 GameObject:
   m_ObjectHideFlags: 0
@@ -23447,7 +23442,7 @@ MonoBehaviour:
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 1421389275}
+    TrackingTarget: {fileID: 6425971829457783027}
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
@@ -23478,8 +23473,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1551931533}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0019999743, y: 2.9, z: -16.470001}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.0019999743, y: 2.9, z: -9.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -25695,7 +25690,7 @@ Transform:
   m_GameObject: {fileID: 1748469042}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.874, z: -0.457}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -31392,10 +31387,6 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4476816079910115894, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}
-      propertyPath: _cameraTarget
-      value: 
-      objectReference: {fileID: 1748469043}
     - target: {fileID: 4642559629835663329, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}
       propertyPath: m_Name
       value: NewPlayer
@@ -31422,7 +31413,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7273121680510981426, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -10.47
+      value: -3.53
       objectReference: {fileID: 0}
     - target: {fileID: 7273121680510981426, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}
       propertyPath: m_LocalRotation.w

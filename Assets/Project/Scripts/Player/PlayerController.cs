@@ -35,6 +35,13 @@ namespace ToySiege.Player
         private float _currentYaw;
         private float _yawSmoothVelocity;
 
+        // Yeni field'lar
+        [Header("Kamera")]
+        [SerializeField] private Transform _cameraTarget;
+        private Transform _modelHip;
+
+        public Transform CameraTarget => _cameraTarget;
+
         private void Awake()
         {
             _cc = GetComponent<CharacterController>();
@@ -64,6 +71,27 @@ namespace ToySiege.Player
 
             _targetYaw = transform.eulerAngles.y;
             _currentYaw = _targetYaw;
+
+
+            // Awake içinde — GetBoneTransform satırını şununla değiştir:
+            _modelHip = animator.transform.Find("mixamorig:Hips");
+
+            if (_modelHip == null)
+            {
+                // İsim farklı olabilir — tüm child'larda "Hip" ara
+                foreach (var t in animator.GetComponentsInChildren<Transform>())
+                {
+                    if (t.name.ToLower().Contains("hip"))
+                    {
+                        _modelHip = t;
+                        Debug.Log($"<color=green>[PlayerController] Hip bulundu: {t.name}</color>");
+                        break;
+                    }
+                }
+            }
+
+            if (_modelHip == null)
+                Debug.LogWarning("[PlayerController] Hip kemiği bulunamadı!");
         }
 
         private void Start()
@@ -91,6 +119,26 @@ namespace ToySiege.Player
                 else
                 { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
             }
+
+            // Update içine — mevcut kodun sonuna
+            if (_modelHip != null && _cameraTarget != null)
+            {
+                // Kamera hedefini hip kemiğinin Y pozisyonuna yumuşak takip ettir
+                Vector3 targetPos = _cameraTarget.position;
+                targetPos.y = Mathf.Lerp(
+                    _cameraTarget.position.y,
+                    _modelHip.position.y + 0.3f,    // hip üstü biraz offset
+                    Time.deltaTime * 10f
+                );
+                _cameraTarget.position = targetPos;
+
+                // XZ'de parent'ı takip etsin
+                _cameraTarget.localPosition = new Vector3(
+                    0f,
+                    _cameraTarget.localPosition.y,
+                    0f
+                );
+            }
         }
 
         private void FixedUpdate() => FSM.FixedUpdate();
@@ -108,6 +156,10 @@ namespace ToySiege.Player
         }
 
         // ── Hareket ──
+
+       
+
+
         public void HandleWalkMovement()
         {
             Vector3 moveDir = GetCharacterRelativeDirection();
@@ -198,6 +250,7 @@ namespace ToySiege.Player
             return (forward * input.y + right * input.x).normalized;
         }
 
+
         private void OnDrawGizmosSelected()
         {
             if (_cc == null) return;
@@ -215,3 +268,4 @@ namespace ToySiege.Player
         }
     }
 }
+

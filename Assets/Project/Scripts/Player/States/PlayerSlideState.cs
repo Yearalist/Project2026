@@ -1,6 +1,4 @@
-﻿
-
-using UnityEngine;
+﻿using UnityEngine;
 using ToySiege.Core.FSM;
 
 namespace ToySiege.Player.States
@@ -8,6 +6,7 @@ namespace ToySiege.Player.States
     public class PlayerSlideState : PlayerBaseState
     {
         private float _timer;
+        private float _duration;
         private Vector3 _slideDirection;
 
         public PlayerSlideState(PlayerController ctx, PlayerStateFactory factory)
@@ -16,18 +15,25 @@ namespace ToySiege.Player.States
         public override void Enter()
         {
             Debug.Log("<color=green>→ STATE: Slide</color>");
-            Ctx.Anim.TriggerSlide();
-
-            _slideDirection = Ctx.transform.forward;
             _timer = Ctx.Config.SlideDuration;
+            _slideDirection = Ctx.transform.forward;
 
-            Ctx.SetColliderHeight(
-                Ctx.Config.SlideColliderHeight,
-                Ctx.Config.SlideColliderCenterY
-            );
-
-            // YENİ — Slide hız patlaması + iz efekti
+            Ctx.Anim.TriggerSlide();
             Ctx.VFX.PlaySlideBurst();
+
+            // Collider'ı küçült (Hazır yazdığın metodu kullanalım!)
+            Ctx.SetColliderHeight(Ctx.Config.SlideColliderHeight, Ctx.Config.SlideColliderCenterY);
+        }
+
+        public override void FixedExecute()
+        {
+            Ctx.HandleMouseRotation();
+
+            // Sprint hızıyla ilerle — kamera geçişi yumuşak olur
+            Vector3 velocity = _slideDirection * Ctx.Config.SprintSpeed;
+            Ctx.SetHorizontalVelocity(velocity);
+            Ctx.ApplyGravity();
+            Ctx.MoveCharacter();
         }
 
         public override void Execute()
@@ -36,26 +42,15 @@ namespace ToySiege.Player.States
             base.Execute();
         }
 
-        public override void FixedExecute()
-        {
-            Ctx.HandleMouseRotation();
-            Vector3 velocity = _slideDirection * Ctx.Config.SlideSpeed;
-            Ctx.SetHorizontalVelocity(velocity);
-            Ctx.ApplyGravity();
-            Ctx.MoveCharacter();
-        }
-
         public override void Exit()
         {
-            Ctx.SetColliderHeight(
-                Ctx.Config.NormalColliderHeight,
-                Ctx.Config.NormalColliderCenterY
-            );
             Ctx.StartSlideCooldown();
-
-            // YENİ — Slide iz efektini durdur
             Ctx.VFX.StopSlideTrail();
+
+            // Collider'ı eski haline getir
+            Ctx.SetColliderHeight(Ctx.Config.NormalColliderHeight, Ctx.Config.NormalColliderCenterY);
         }
+
 
         protected override void CheckTransitions()
         {
@@ -69,9 +64,7 @@ namespace ToySiege.Player.States
                     Ctx.FSM.ChangeState(Factory.Walk());
             }
             else
-            {
                 Ctx.FSM.ChangeState(Factory.Idle());
-            }
         }
     }
 }

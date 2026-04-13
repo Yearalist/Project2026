@@ -14577,7 +14577,6 @@ GameObject:
   - component: {fileID: 7273121680510981426}
   - component: {fileID: 1312582750432597462}
   - component: {fileID: 4551769297899587037}
-  - component: {fileID: 5733413290838714499}
   - component: {fileID: 3507339874407486381}
   - component: {fileID: 4476816079910115894}
   m_Layer: 0
@@ -14640,18 +14639,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73ebf3ffe627af04798334d18b6c1e2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Player.PlayerInputHandler
---- !u!114 &5733413290838714499
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4642559629835663329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4afe1de19116c3f44a8c7d1c04f60364, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Player.PlayerAnimator
 --- !u!114 &3507339874407486381
 MonoBehaviour:
   m_ObjectHideFlags: 0

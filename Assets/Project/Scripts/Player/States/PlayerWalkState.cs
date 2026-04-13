@@ -10,8 +10,6 @@ namespace ToySiege.Player.States
 
         public override void Enter()
         {
-            Debug.Log("<color=white>→ STATE: Walk</color>");
-            Ctx.Anim.SetWalking();       // Speed → 1 (Blend Tree: Walking klip)
             Ctx.IsSprinting = false;
             Ctx.VFX.StartWalkDust();
         }
@@ -22,6 +20,7 @@ namespace ToySiege.Player.States
             Ctx.HandleWalkMovement();
             Ctx.ApplyGravity();
             Ctx.MoveCharacter();
+            Ctx.Anim.UpdateLocomotion(Ctx.Input.MoveInput, false);
         }
 
         public override void Exit()

@@ -10,11 +10,10 @@ namespace ToySiege.Player.States
 
         public override void Enter()
         {
-            Debug.Log("<color=white>→ STATE: Idle</color>");
             Ctx.Anim.SetIdle();
             Ctx.SetHorizontalVelocity(Vector3.zero);
             Ctx.IsSprinting = false;
-            Ctx.VFX.StopFootDust();    // YENİ — dururken toz yok
+            Ctx.VFX.StopFootDust();
         }
 
         public override void FixedExecute()
@@ -22,6 +21,8 @@ namespace ToySiege.Player.States
             Ctx.HandleMouseRotation();
             Ctx.ApplyGravity();
             Ctx.MoveCharacter();
+            // Idle'dayken de Blend Tree'yi besle (smooth 0'a iner)
+            Ctx.Anim.UpdateLocomotion(Ctx.Input.MoveInput, false);
         }
 
         protected override void CheckTransitions()

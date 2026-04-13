@@ -4,6 +4,8 @@ namespace ToySiege.Player.Data
 {
     [CreateAssetMenu(fileName = "PlayerConfig", menuName = "ToySiege/Player Config")]
     public class PlayerConfig : ScriptableObject
+
+
     {
         [Header("══ YÜRÜME / KOŞMA ══")]
         public float WalkSpeed = 4f;
@@ -22,9 +24,18 @@ namespace ToySiege.Player.Data
         public float JumpBufferTime = 0.1f;
 
         [Header("══ SLIDE ══")]
-        public float SlideDuration = 0.45f;
-        public float SlideSpeed = 14f;
+        public float SlideDuration = 1.533f;       // klip uzunluğu
+        public float SlideMaxSpeed = 7f;           // en hızlı anındaki hız
         public float SlideCooldown = 0.5f;
+       
+
+        [Tooltip("X=zaman(0-1), Y=hız çarpanı(0-1). Animasyonla senkronize et.")]
+        public AnimationCurve SlideSpeedCurve = new AnimationCurve(
+            new Keyframe(0.0f, 0.2f),   // başlangıç: yavaş (yere iniyor)
+            new Keyframe(0.2f, 1.0f),   // 0.3s sonra: tam hız (kayıyor)
+            new Keyframe(0.7f, 1.0f),   // 1.0s'ye kadar: tam hız
+            new Keyframe(1.0f, 0.0f)    // son: yavaşla ve dur (kalkıyor)
+        );
 
         [Header("══ COLLIDER (CharacterController) ══")]
         [Tooltip("Normal duruşta collider yüksekliği — modelin boyuyla eşleş")]

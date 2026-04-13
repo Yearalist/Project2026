@@ -11,7 +11,7 @@ namespace ToySiege.Player.States
         public override void Enter()
         {
             Debug.Log("<color=magenta>→ STATE: Double Jump</color>");
-            Ctx.Anim.TriggerDoubleJump();
+            Ctx.Anim.TriggerDoubleJump();        // ← bu doğru
             Ctx.SetVerticalVelocity(Ctx.Config.DoubleJumpForce);
             Ctx.ConsumeDoubleJump();
             Ctx.VFX.StopFootDust();
