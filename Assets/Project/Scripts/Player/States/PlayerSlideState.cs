@@ -23,6 +23,7 @@ namespace ToySiege.Player.States
 
             // Collider'ı küçült (Hazır yazdığın metodu kullanalım!)
             Ctx.SetColliderHeight(Ctx.Config.SlideColliderHeight, Ctx.Config.SlideColliderCenterY);
+            GameFeelManager.Instance?.OnSlideStart();
         }
 
         public override void FixedExecute()
@@ -49,6 +50,7 @@ namespace ToySiege.Player.States
 
             // Collider'ı eski haline getir
             Ctx.SetColliderHeight(Ctx.Config.NormalColliderHeight, Ctx.Config.NormalColliderCenterY);
+            GameFeelManager.Instance?.OnSlideEnd();
         }
 
 

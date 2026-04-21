@@ -20,6 +20,7 @@ namespace ToySiege.Player.States
             Ctx.IsSprinting = true;
             Ctx.Anim.SetSprinting(true);
             Ctx.VFX.StartSprintDust();
+            GameFeelManager.Instance?.OnSprintStart();
         }
 
         public override void FixedExecute()
@@ -35,6 +36,7 @@ namespace ToySiege.Player.States
         {
             Ctx.Anim.SetSprinting(false);
             Ctx.VFX.StopFootDust();
+            GameFeelManager.Instance?.OnSprintEnd();
         }
 
         protected override void CheckTransitions()

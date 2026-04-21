@@ -15,6 +15,7 @@ namespace ToySiege.Player.States
             Ctx.SetVerticalVelocity(Ctx.Config.JumpForce);
             Ctx.ResetDoubleJump();
             Ctx.VFX.StopFootDust();
+            GameFeelManager.Instance?.OnJump();
         }
 
         public override void Execute()
@@ -45,6 +46,7 @@ namespace ToySiege.Player.States
             if (Ctx.IsGrounded && Ctx.VerticalVelocity <= 0f)
             {
                 Ctx.Anim.TriggerLanding();  // Animator: Falling Idle → Falling To Landing
+                GameFeelManager.Instance?.OnLanding(Ctx.VerticalVelocity);
 
                 if (Ctx.Input.MoveInput.sqrMagnitude > 0.01f)
                 {
