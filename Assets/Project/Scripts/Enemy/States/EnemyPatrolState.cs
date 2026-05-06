@@ -13,6 +13,7 @@ namespace ToySiege.Enemy.States
         {
             Debug.Log("<color=grey>→ ENEMY: Patrol</color>");
             Ctx.Agent.speed = Ctx.Config.MoveSpeed;
+            Ctx.Anim.SetCombatMode(false);    // ← normal yürüyüş
             _patrolTarget = Ctx.GetRandomPatrolPoint();
             Ctx.Agent.SetDestination(_patrolTarget);
         }
