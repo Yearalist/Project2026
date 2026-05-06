@@ -4067,7 +4067,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &263219006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16274,6 +16274,93 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &808878216 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+  m_PrefabInstance: {fileID: 863716162}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &808878217
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808878216}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.47
+  m_Height: 1.97
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.77, z: 0}
+--- !u!114 &808878218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808878216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94b125b7e69e7ed47888358ba77b3041, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Enemy.EnemyController
+  _config: {fileID: 11400000, guid: ac1a5f4068372d446a2612fa60b993fb, type: 2}
+--- !u!114 &808878219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808878216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93042950e4809894886f90c78f28ddfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Enemy.EnemyAnimator
+--- !u!114 &808878220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808878216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a34a3bee59044948bc294f5f1c76882, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Enemy.EnemyDetection
+--- !u!195 &808878221
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808878216}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.48
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1.67
+  m_BaseOffset: 0.04
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &809594957
 GameObject:
   m_ObjectHideFlags: 0
@@ -26776,6 +26863,78 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 857231305}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &863716162
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.956564
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.211
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -8.623703
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_Name
+      value: ArmyMan@Idle
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 808878221}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 808878220}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 808878219}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 808878218}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 808878217}
+  m_SourcePrefab: {fileID: 100100000, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
 --- !u!1 &865477750
 GameObject:
   m_ObjectHideFlags: 0
@@ -34973,6 +35132,78 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1001 &1017281367
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.31
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.211
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.577
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_Name
+      value: ArmyMan@Idle (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2038689863}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2038689862}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2038689861}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2038689860}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2038689859}
+  m_SourcePrefab: {fileID: 100100000, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
 --- !u!43 &1018289466
 Mesh:
   m_ObjectHideFlags: 0
@@ -35581,6 +35812,93 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1069658827}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1080297437 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+  m_PrefabInstance: {fileID: 1560660669}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &1080297438
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080297437}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.47
+  m_Height: 1.97
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.77, z: 0}
+--- !u!114 &1080297439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080297437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94b125b7e69e7ed47888358ba77b3041, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Enemy.EnemyController
+  _config: {fileID: 11400000, guid: ac1a5f4068372d446a2612fa60b993fb, type: 2}
+--- !u!114 &1080297440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080297437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93042950e4809894886f90c78f28ddfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Enemy.EnemyAnimator
+--- !u!114 &1080297441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080297437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a34a3bee59044948bc294f5f1c76882, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Enemy.EnemyDetection
+--- !u!195 &1080297442
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080297437}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.48
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1.67
+  m_BaseOffset: 0.04
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1089522222 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 65464d2621948bb4fa3e86e751601589, type: 3}
@@ -44370,6 +44688,78 @@ Transform:
   - {fileID: 1149413934}
   m_Father: {fileID: 2145355789}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1560660669
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.82
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.211
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.77
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      propertyPath: m_Name
+      value: ArmyMan@Idle (2)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1080297442}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1080297441}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1080297440}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1080297439}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1080297438}
+  m_SourcePrefab: {fileID: 100100000, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
 --- !u!1 &1562462100
 GameObject:
   m_ObjectHideFlags: 0
@@ -57021,6 +57411,93 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+--- !u!1 &2038689858 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
+  m_PrefabInstance: {fileID: 1017281367}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &2038689859
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038689858}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.47
+  m_Height: 1.97
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.77, z: 0}
+--- !u!114 &2038689860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038689858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94b125b7e69e7ed47888358ba77b3041, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Enemy.EnemyController
+  _config: {fileID: 11400000, guid: ac1a5f4068372d446a2612fa60b993fb, type: 2}
+--- !u!114 &2038689861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038689858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93042950e4809894886f90c78f28ddfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Enemy.EnemyAnimator
+--- !u!114 &2038689862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038689858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a34a3bee59044948bc294f5f1c76882, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Enemy.EnemyDetection
+--- !u!195 &2038689863
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038689858}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.48
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1.67
+  m_BaseOffset: 0.04
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &2040030913 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5888842622187848661, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}
@@ -59290,3 +59767,6 @@ SceneRoots:
   - {fileID: 773789532}
   - {fileID: 263219013}
   - {fileID: 2071657165}
+  - {fileID: 863716162}
+  - {fileID: 1017281367}
+  - {fileID: 1560660669}
