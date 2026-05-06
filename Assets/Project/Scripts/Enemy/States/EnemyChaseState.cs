@@ -10,6 +10,7 @@ namespace ToySiege.Enemy.States
         public override void Enter()
         {
             Debug.Log("<color=orange>→ ENEMY: Chase</color>");
+            Ctx.Anim.SetCombatMode(true);     // ← dövüş pozisyonuna geç
         }
 
         public override void Execute()

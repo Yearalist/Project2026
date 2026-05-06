@@ -16361,34 +16361,6 @@ NavMeshAgent:
   m_BaseOffset: 0.04
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!95 &808878223
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 808878216}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
-  m_Controller: {fileID: 9100000, guid: e3cce33a1d5d2b54c83a656f86f6acac, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftHandIndex1'\n\tTransform
-    'mixamorig:Spine1'\n\tTransform 'mixamorig:RightArm'\n\tTransform 'mixamorig:LeftLeg'\n\tTransform
-    'mixamorig:LeftShoulder'\n\tTransform 'mixamorig:RightFoot'\n\tTransform 'mixamorig:Head'\n\tTransform
-    'mixamorig:LeftUpLeg'\n\tTransform 'mixamorig:LeftArm'\n\tand more ...\n\tFrom
-    animation clip 'Idle'"
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &809594957
 GameObject:
   m_ObjectHideFlags: 0
@@ -26949,9 +26921,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 808878223}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 808878221}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
       insertIndex: -1
@@ -35221,9 +35190,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2038689865}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 2038689863}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
       insertIndex: -1
@@ -35933,34 +35899,6 @@ NavMeshAgent:
   m_BaseOffset: 0.04
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!95 &1080297444
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1080297437}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
-  m_Controller: {fileID: 9100000, guid: e3cce33a1d5d2b54c83a656f86f6acac, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftHandIndex1'\n\tTransform
-    'mixamorig:Spine1'\n\tTransform 'mixamorig:RightArm'\n\tTransform 'mixamorig:LeftLeg'\n\tTransform
-    'mixamorig:LeftShoulder'\n\tTransform 'mixamorig:RightFoot'\n\tTransform 'mixamorig:Head'\n\tTransform
-    'mixamorig:LeftUpLeg'\n\tTransform 'mixamorig:LeftArm'\n\tand more ...\n\tFrom
-    animation clip 'Idle'"
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1089522222 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 65464d2621948bb4fa3e86e751601589, type: 3}
@@ -44806,9 +44744,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1080297444}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1080297442}
@@ -57563,34 +57498,6 @@ NavMeshAgent:
   m_BaseOffset: 0.04
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!95 &2038689865
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2038689858}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 8b8c1d40061e08941aa588fc176653c4, type: 3}
-  m_Controller: {fileID: 9100000, guid: e3cce33a1d5d2b54c83a656f86f6acac, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftHandIndex1'\n\tTransform
-    'mixamorig:Spine1'\n\tTransform 'mixamorig:RightArm'\n\tTransform 'mixamorig:LeftLeg'\n\tTransform
-    'mixamorig:LeftShoulder'\n\tTransform 'mixamorig:RightFoot'\n\tTransform 'mixamorig:Head'\n\tTransform
-    'mixamorig:LeftUpLeg'\n\tTransform 'mixamorig:LeftArm'\n\tand more ...\n\tFrom
-    animation clip 'Idle'"
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2040030913 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5888842622187848661, guid: c082ff21e60c4104084e4ebfe72409f8, type: 3}

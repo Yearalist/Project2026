@@ -13,6 +13,7 @@ namespace ToySiege.Enemy.States
         {
             Debug.Log("<color=grey>→ ENEMY: Idle</color>");
             Ctx.StopMoving();
+            Ctx.Anim.SetCombatMode(false);    // ← normal idle
             _waitTimer = Random.Range(Ctx.Config.IdleWaitMin, Ctx.Config.IdleWaitMax);
         }
 
