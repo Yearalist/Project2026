@@ -1,0 +1,167 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &9205594915107811006
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6761528100847068527}
+  - component: {fileID: 3803428032349299933}
+  - component: {fileID: 3456680551122773224}
+  m_Layer: 0
+  m_Name: PoliceCar
+  m_TagString: Enemy
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6761528100847068527
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9205594915107811006}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4245776395636781751}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!195 &3803428032349299933
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9205594915107811006}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 1.83
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1.13
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &3456680551122773224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9205594915107811006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b24862452f2f4248a2af504ef014566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PoliceCarEnemy
+  player: {fileID: 0}
+  wheels:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  patrolPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  patrolSpeed: 5
+  waypointThreshold: 2
+  detectionRange: 2.64
+  dashTriggerRange: 9.97
+  dashWindupTime: 0.8
+  dashSpeed: 30
+  dashDuration: 2
+  dashCooldown: 3
+  dashDamage: 40
+  normalHitDamage: 15
+  knockbackForce: 20
+  knockUpForce: 8
+  dashParticle: {fileID: 0}
+  sirenLight: {fileID: 0}
+  dashHornSound: {fileID: 8300000, guid: 374c8b0f082b43549b1ff6585e7d5e74, type: 3}
+  hitSound: {fileID: 8300000, guid: 7d775f8b371f76240a95506e15494878, type: 3}
+  currentState: 0
+--- !u!1001 &4424432997006464348
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6761528100847068527}
+    m_Modifications:
+    - target: {fileID: 8510289298146638534, guid: 5f61e529fa5bb6142b5efe776d4d96dc, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8510289298146638534, guid: 5f61e529fa5bb6142b5efe776d4d96dc, type: 3}
+      propertyPath: 'patrolPoints.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8510289298146638534, guid: 5f61e529fa5bb6142b5efe776d4d96dc, type: 3}
+      propertyPath: 'patrolPoints.Array.data[1]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 90
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8510289298146638534, guid: 5f61e529fa5bb6142b5efe776d4d96dc, type: 3}
+    - {fileID: 8587832086145834849, guid: 5f61e529fa5bb6142b5efe776d4d96dc, type: 3}
+    - {fileID: 8553120667738665816, guid: 5f61e529fa5bb6142b5efe776d4d96dc, type: 3}
+    - {fileID: 6211226875640831196, guid: 5f61e529fa5bb6142b5efe776d4d96dc, type: 3}
+    - {fileID: 1055509204250223705, guid: 5f61e529fa5bb6142b5efe776d4d96dc, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+--- !u!4 &4245776395636781751 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+  m_PrefabInstance: {fileID: 4424432997006464348}
+  m_PrefabAsset: {fileID: 0}

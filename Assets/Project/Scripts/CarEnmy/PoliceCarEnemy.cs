@@ -1,322 +1,510 @@
-using ToySiege.Player.Health;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
+using ToySiege.Player.Health;
 
-/// <summary>
-/// Polis arabas� d��man AI - Dash/H�zlanma sald�r� mekani�i
-/// 
-/// KURULUM:
-/// 1) Araba prefab'�na NavMeshAgent ekle
-/// 2) Bu scripti araba root objesine ekle
-/// 3) Araba objesine "Enemy" tag'i ver
-/// 4) Araba objesine Rigidbody (Is Kinematic = true) ve BoxCollider (Is Trigger = true) ekle
-/// 5) Inspector'dan wheels dizisine 4 tekerlek objesini ata
-/// 6) Player objesine "Player" tag'i ver
-/// </summary>
-[RequireComponent(typeof(NavMeshAgent))]
-public class PoliceCarEnemy : MonoBehaviour
+namespace ToySiege.Enemy
 {
-    [Header("=== Referanslar ===")]
-    [Tooltip("Oyuncu Transform'u (bo� b�rak�rsan 'Player' tag ile bulur)")]
-    public Transform player;
-    public WheelSpinner[] wheels;
-
-    [Header("=== Devriye Ayarlar� ===")]
-    [Tooltip("Devriye noktalar� (bo� b�rak�rsan yerinde bekler)")]
-    public Transform[] patrolPoints;
-    public float patrolSpeed = 5f;
-    public float waypointThreshold = 2f;
-
-    [Header("=== Alg�lama ===")]
-    public float detectionRange = 25f;
-    [Tooltip("Dash ba�lamadan �nce oyuncuya bu mesafede kilitlenir")]
-    public float dashTriggerRange = 15f;
-    [Tooltip("Dash �ncesi bekleme (korna/siren uyar�s�)")]
-    public float dashWindupTime = 0.8f;
-
-    [Header("=== Dash Sald�r� ===")]
-    public float dashSpeed = 30f;
-    public float dashDuration = 2f;
-    [Tooltip("Dash sonras� bekleme s�resi (cooldown)")]
-    public float dashCooldown = 3f;
-
-    [Header("=== Hasar ===")]
-    public float dashDamage = 40f;
-    public float normalHitDamage = 15f;
-    [Tooltip("�arpma kuvveti (f�rlatma)")]
-    public float knockbackForce = 20f;
-    [Tooltip("Yukar� f�rlatma kuvveti")]
-    public float knockUpForce = 8f;
-
-    [Header("=== G�rsel Efektler ===")]
-    [Tooltip("Dash s�ras�nda aktif olacak partik�l (opsiyonel)")]
-    public ParticleSystem dashParticle;
-    [Tooltip("Siren ����� objesi (opsiyonel)")]
-    public GameObject sirenLight;
-    public AudioClip dashHornSound;
-    public AudioClip hitSound;
-
-    // Durum makinesi
-    public enum State { Patrol, Chase, WindUp, Dash, Cooldown }
-    [HideInInspector] public State currentState = State.Patrol;
-
-    // Private
-    private NavMeshAgent agent;
-    private AudioSource audioSource;
-    private int currentPatrolIndex = 0;
-    private float stateTimer = 0f;
-    private Vector3 dashDirection;
-    private Vector3 dashStartPos;
-    private bool hasHitPlayerThisDash = false;
-
-    void Start()
+    /// <summary>
+    /// Polis arabası düşman AI v3 - ToySiege mimarisine entegre
+    /// 
+    /// ÖNCEKİ SORUNLAR:
+    /// 1) Araba askeler gibi takip etmiyordu → NavMeshAgent ile sürekli chase
+    /// 2) Alarm sistemi askerlere ulaşmıyordu → EnemyDetection.ForceAlert() kullanıyor
+    /// 3) Dash çok uzağa gidiyordu → oyuncuya kadar gidip duruyor
+    /// 4) Devriyede kayıyordu → keskin dönüş sistemi
+    /// 
+    /// KURULUM:
+    /// 1) Araba root objesine: NavMeshAgent, Rigidbody(Kinematic), BoxCollider(Trigger), Tag="Enemy"
+    /// 2) Bu scripti ekle, Inspector'dan ayarla
+    /// 3) EnemyDetection.cs'e ForceAlert() metodunu ekle (ayrı dosyada verildi)
+    /// </summary>
+    [RequireComponent(typeof(NavMeshAgent))]
+    public class PoliceCarEnemy : MonoBehaviour
     {
-        agent = GetComponent<NavMeshAgent>();
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-            audioSource = gameObject.AddComponent<AudioSource>();
+        [Header("=== Referanslar ===")]
+        public WheelSpinner[] wheels;
 
-        // Player'� tag ile bul
-        if (player == null)
+        [Header("=== Devriye Ayarları ===")]
+        public Transform[] patrolPoints;
+        public float patrolSpeed = 5f;
+        public float waypointThreshold = 2f;
+        public float turnPauseTime = 0.3f;
+
+        [Header("=== Algılama & Takip ===")]
+        public float detectionRange = 25f;
+        [Tooltip("Takipte oyuncuyu kaybetme mesafesi")]
+        public float loseRange = 35f;
+        public float chaseSpeed = 10f;
+        [Tooltip("Bu mesafede dash tetiklenir")]
+        public float dashTriggerRange = 12f;
+        public float dashWindupTime = 0.8f;
+
+        [Header("=== Dash Saldırı ===")]
+        public float dashSpeed = 20f;
+        public float dashStopDistance = 2f;
+        public float dashMaxTime = 3f;
+        public float dashCooldown = 3f;
+
+        [Header("=== Hasar ===")]
+        public float dashDamage = 40f;
+        public float normalHitDamage = 15f;
+        public float knockbackForce = 20f;
+        public float knockUpForce = 8f;
+
+        [Header("=== Alarm Sistemi ===")]
+        [Tooltip("Çarptıktan sonra bu yarıçaptaki düşmanları uyarır")]
+        public float alertRadius = 40f;
+
+        [Header("=== Sağlık ===")]
+        public float maxHealth = 200f;
+        private float _currentHealth;
+
+        [Header("=== Görsel Efektler ===")]
+        public ParticleSystem dashParticle;
+        public GameObject sirenLight;
+        public AudioClip dashHornSound;
+        public AudioClip hitSound;
+        public AudioClip alertSound;
+
+        // Durum
+        public enum State { Patrol, TurnPause, Chase, WindUp, Dash, Cooldown, Dead }
+        [HideInInspector] public State currentState = State.Patrol;
+
+        // Private
+        private NavMeshAgent _agent;
+        private AudioSource _audio;
+        private Transform _player;
+        private int _patrolIndex = 0;
+        private float _stateTimer = 0f;
+        private Vector3 _dashTarget;
+        private bool _hasHitThisDash = false;
+        private bool _isAlerted = false;
+
+        // ══════════════════════════════════════
+        //  LIFECYCLE
+        // ══════════════════════════════════════
+
+        void Start()
         {
-            GameObject p = GameObject.FindGameObjectWithTag("Player");
-            if (p != null) player = p.transform;
+            _agent = GetComponent<NavMeshAgent>();
+            _audio = GetComponent<AudioSource>();
+            if (_audio == null)
+                _audio = gameObject.AddComponent<AudioSource>();
+
+            _currentHealth = maxHealth;
+
+            // Oyuncuyu bul
+            var playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null) _player = playerObj.transform;
+
+            // NavMeshAgent - keskin dönüş ayarları
+            _agent.speed = patrolSpeed;
+            _agent.angularSpeed = 0f;
+            _agent.acceleration = 100f;
+            _agent.autoBraking = true;
+            _agent.updateRotation = false;
+
+            SetSiren(false);
         }
 
-        agent.speed = patrolSpeed;
-        SetSiren(false);
-    }
-
-    void Update()
-    {
-        if (player == null) return;
-
-        float distToPlayer = Vector3.Distance(transform.position, player.position);
-        UpdateWheels();
-
-        switch (currentState)
+        void Update()
         {
-            case State.Patrol:
-                Patrol();
-                if (distToPlayer < detectionRange)
-                    ChangeState(State.Chase);
-                break;
+            if (currentState == State.Dead) return;
+            if (_player == null) return;
 
-            case State.Chase:
-                Chase();
-                if (distToPlayer > detectionRange * 1.3f)
-                    ChangeState(State.Patrol);
-                else if (distToPlayer < dashTriggerRange)
-                    ChangeState(State.WindUp);
-                break;
+            float dist = Vector3.Distance(transform.position, _player.position);
+            UpdateWheels();
 
-            case State.WindUp:
-                WindUp();
-                break;
-
-            case State.Dash:
-                Dash();
-                break;
-
-            case State.Cooldown:
-                Cooldown();
-                break;
-        }
-    }
-
-    // ==================== DURUMLAR ====================
-
-    void Patrol()
-    {
-        if (patrolPoints == null || patrolPoints.Length == 0)
-        {
-            agent.isStopped = true;
-            return;
-        }
-
-        agent.isStopped = false;
-        agent.speed = patrolSpeed;
-        agent.SetDestination(patrolPoints[currentPatrolIndex].position);
-
-        if (agent.remainingDistance < waypointThreshold)
-        {
-            currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
-        }
-    }
-
-    void Chase()
-    {
-        agent.isStopped = false;
-        agent.speed = patrolSpeed * 1.5f;
-        agent.SetDestination(player.position);
-        SetSiren(true);
-    }
-
-    void WindUp()
-    {
-        // Yerinde dur, oyuncuya do�ru d�n, uyar� ver
-        agent.isStopped = true;
-
-        // Oyuncuya do�ru yava��a d�n
-        Vector3 lookDir = (player.position - transform.position).normalized;
-        lookDir.y = 0;
-        if (lookDir != Vector3.zero)
-        {
-            Quaternion targetRot = Quaternion.LookRotation(lookDir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 5f * Time.deltaTime);
-        }
-
-        stateTimer -= Time.deltaTime;
-        if (stateTimer <= 0f)
-        {
-            ChangeState(State.Dash);
-        }
-    }
-
-    void Dash()
-    {
-        // NavMesh kapal�, do�rudan ileri git
-        agent.isStopped = true;
-        transform.position += dashDirection * dashSpeed * Time.deltaTime;
-
-        stateTimer -= Time.deltaTime;
-
-        // Maksimum mesafe veya s�re kontrol�
-        float distFromStart = Vector3.Distance(transform.position, dashStartPos);
-        if (stateTimer <= 0f || distFromStart > dashSpeed * dashDuration * 1.2f)
-        {
-            ChangeState(State.Cooldown);
-        }
-    }
-
-    void Cooldown()
-    {
-        agent.isStopped = true;
-        SetSiren(false);
-
-        stateTimer -= Time.deltaTime;
-        if (stateTimer <= 0f)
-        {
-            // NavMesh �zerine geri snap
-            if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 10f, NavMesh.AllAreas))
+            switch (currentState)
             {
-                agent.Warp(hit.position);
+                case State.Patrol:
+                    DoPatrol();
+                    if (dist < detectionRange || _isAlerted)
+                        ChangeState(State.Chase);
+                    break;
+
+                case State.TurnPause:
+                    DoTurnPause();
+                    if (dist < detectionRange || _isAlerted)
+                        ChangeState(State.Chase);
+                    break;
+
+                case State.Chase:
+                    DoChase();
+                    // Oyuncuyu kaybettiyse ve alarm yoksa devriyeye dön
+                    if (dist > loseRange && !_isAlerted)
+                        ChangeState(State.Patrol);
+                    // Dash mesafesine girdiyse
+                    else if (dist < dashTriggerRange)
+                        ChangeState(State.WindUp);
+                    break;
+
+                case State.WindUp:
+                    DoWindUp();
+                    break;
+
+                case State.Dash:
+                    DoDash();
+                    break;
+
+                case State.Cooldown:
+                    DoCooldown();
+                    break;
             }
-            ChangeState(State.Chase);
         }
-    }
 
-    // ==================== DURUM GE��� ====================
+        // ══════════════════════════════════════
+        //  DURUMLAR
+        // ══════════════════════════════════════
 
-    void ChangeState(State newState)
-    {
-        currentState = newState;
-
-        switch (newState)
+        void DoPatrol()
         {
-            case State.Patrol:
+            if (patrolPoints == null || patrolPoints.Length == 0)
+            {
+                _agent.isStopped = true;
+                return;
+            }
+
+            _agent.isStopped = false;
+            _agent.speed = patrolSpeed;
+            _agent.SetDestination(patrolPoints[_patrolIndex].position);
+
+            FaceMovementDirection();
+
+            if (_agent.remainingDistance < waypointThreshold && !_agent.pathPending)
+            {
+                _patrolIndex = (_patrolIndex + 1) % patrolPoints.Length;
+                ChangeState(State.TurnPause);
+            }
+        }
+
+        void DoTurnPause()
+        {
+            _agent.isStopped = true;
+            _stateTimer -= Time.deltaTime;
+
+            if (_stateTimer <= 0f)
+            {
+                // Sonraki noktaya anında dön
+                if (patrolPoints.Length > 0)
+                {
+                    Vector3 dir = (patrolPoints[_patrolIndex].position - transform.position).normalized;
+                    dir.y = 0;
+                    if (dir.sqrMagnitude > 0.01f)
+                        transform.rotation = Quaternion.LookRotation(dir);
+                }
+                ChangeState(State.Patrol);
+            }
+        }
+
+        void DoChase()
+        {
+            // ★ Askerler gibi sürekli takip
+            _agent.isStopped = false;
+            _agent.speed = chaseSpeed;
+            _agent.SetDestination(_player.position);
+            SetSiren(true);
+            FaceMovementDirection();
+        }
+
+        void DoWindUp()
+        {
+            _agent.isStopped = true;
+
+            // Oyuncuya anında dön
+            Vector3 lookDir = (_player.position - transform.position).normalized;
+            lookDir.y = 0;
+            if (lookDir.sqrMagnitude > 0.01f)
+                transform.rotation = Quaternion.LookRotation(lookDir);
+
+            _stateTimer -= Time.deltaTime;
+            if (_stateTimer <= 0f)
+                ChangeState(State.Dash);
+        }
+
+        void DoDash()
+        {
+            _agent.isStopped = true;
+
+            Vector3 dirToTarget = (_dashTarget - transform.position);
+            dirToTarget.y = 0;
+
+            // Hedefe ulaştıysa veya süre dolduysa dur
+            if (dirToTarget.magnitude < dashStopDistance || _stateTimer <= 0f)
+            {
+                ChangeState(State.Cooldown);
+                return;
+            }
+
+            Vector3 moveDir = dirToTarget.normalized;
+            transform.position += moveDir * dashSpeed * Time.deltaTime;
+
+            if (moveDir.sqrMagnitude > 0.01f)
+                transform.rotation = Quaternion.LookRotation(moveDir);
+
+            _stateTimer -= Time.deltaTime;
+        }
+
+        void DoCooldown()
+        {
+            _agent.isStopped = true;
+            _stateTimer -= Time.deltaTime;
+
+            if (_stateTimer <= 0f)
+            {
+                // NavMesh'e geri snap
+                if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 10f, NavMesh.AllAreas))
+                    _agent.Warp(hit.position);
+
+                _isAlerted = false;
+                ChangeState(State.Chase);
+            }
+        }
+
+        // ══════════════════════════════════════
+        //  DURUM GEÇİŞ
+        // ══════════════════════════════════════
+
+        void ChangeState(State newState)
+        {
+            // Aynı duruma tekrar girme
+            if (currentState == newState) return;
+
+            currentState = newState;
+
+            switch (newState)
+            {
+                case State.Patrol:
+                    SetSiren(false);
+                    StopDashParticle();
+                    break;
+
+                case State.TurnPause:
+                    _stateTimer = turnPauseTime;
+                    break;
+
+                case State.Chase:
+                    SetSiren(true);
+                    break;
+
+                case State.WindUp:
+                    _stateTimer = dashWindupTime;
+                    if (dashHornSound != null)
+                        _audio.PlayOneShot(dashHornSound);
+                    break;
+
+                case State.Dash:
+                    _stateTimer = dashMaxTime;
+                    _hasHitThisDash = false;
+                    _dashTarget = _player.position; // Oyuncunun şu anki pozisyonu
+                    if (dashParticle != null) dashParticle.Play();
+                    break;
+
+                case State.Cooldown:
+                    _stateTimer = dashCooldown;
+                    SetSiren(false);
+                    StopDashParticle();
+                    break;
+            }
+
+            Debug.Log($"<color=blue>[Car FSM] → {newState}</color>");
+        }
+
+        // ══════════════════════════════════════
+        //  ÇARPIŞMA & HASAR
+        // ══════════════════════════════════════
+
+        void OnTriggerEnter(Collider other)
+        {
+            if (!other.CompareTag("Player")) return;
+
+            float damage;
+            float force;
+
+            if (currentState == State.Dash && !_hasHitThisDash)
+            {
+                damage = dashDamage;
+                force = knockbackForce;
+                _hasHitThisDash = true;
+
+                // ★ ALARM: Etraftaki askerlere haber ver
+                AlertNearbyEnemies();
+            }
+            else
+            {
+                damage = normalHitDamage;
+                force = knockbackForce * 0.4f;
+            }
+
+            // ★ Mevcut PlayerHealth sistemini kullan
+            var health = other.GetComponent<PlayerHealth>();
+            if (health != null)
+                health.TakeDamage(damage);
+
+            // Fırlatma
+            var rb = other.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                Vector3 knockDir = (other.transform.position - transform.position).normalized;
+                knockDir.y = 0;
+                rb.AddForce(knockDir * force + Vector3.up * knockUpForce, ForceMode.Impulse);
+            }
+
+            // CharacterController varsa (Rigidbody yerine)
+            var cc = other.GetComponent<CharacterController>();
+            if (cc != null && rb == null)
+            {
+                // CharacterController'a force uygulayamayız,
+                // ama PlayerController'a stun/knockback sinyali gönderebiliriz
+                Debug.Log($"<color=red>[Car] Oyuncuya çarptı! Hasar: {damage}</color>");
+            }
+
+            if (hitSound != null)
+                _audio.PlayOneShot(hitSound);
+        }
+
+        /// <summary>
+        /// Araba hasar aldığında (oyuncu silahla vurursa)
+        /// </summary>
+        public void TakeDamage(float damage)
+        {
+            if (currentState == State.Dead) return;
+
+            _currentHealth -= damage;
+            Debug.Log($"<color=orange>[Car] Hasar: {damage} | HP: {_currentHealth}/{maxHealth}</color>");
+
+            if (_currentHealth <= 0f)
+            {
+                currentState = State.Dead;
+                _agent.enabled = false;
                 SetSiren(false);
-                if (dashParticle != null) dashParticle.Stop();
-                break;
-
-            case State.Chase:
-                SetSiren(true);
-                break;
-
-            case State.WindUp:
-                stateTimer = dashWindupTime;
-                // Korna �al
-                if (dashHornSound != null)
-                    audioSource.PlayOneShot(dashHornSound);
-                break;
-
-            case State.Dash:
-                stateTimer = dashDuration;
-                hasHitPlayerThisDash = false;
-                dashStartPos = transform.position;
-                // Oyuncunun �u anki pozisyonuna do�ru dash
-                dashDirection = (player.position - transform.position).normalized;
-                dashDirection.y = 0;
-                if (dashParticle != null) dashParticle.Play();
-                break;
-
-            case State.Cooldown:
-                stateTimer = dashCooldown;
-                if (dashParticle != null) dashParticle.Stop();
-                break;
-        }
-    }
-
-    // ==================== �ARPI�MA ====================
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (!other.CompareTag("Player")) return;
-
-        float damage;
-        float force;
-
-        if (currentState == State.Dash && !hasHitPlayerThisDash)
-        {
-            damage = dashDamage;
-            force = knockbackForce;
-            hasHitPlayerThisDash = true;
-        }
-        else
-        {
-            damage = normalHitDamage;
-            force = knockbackForce * 0.4f;
-        }
-
-        // Hasar ver
-        PlayerHealth health = other.GetComponent<PlayerHealth>();
-        if (health != null)
-            health.TakeDamage(damage);
-
-        // F�rlatma kuvveti uygula
-        Rigidbody playerRb = other.GetComponent<Rigidbody>();
-        if (playerRb != null)
-        {
-            Vector3 knockDir = (other.transform.position - transform.position).normalized;
-            knockDir.y = 0;
-            Vector3 totalForce = knockDir * force + Vector3.up * knockUpForce;
-            playerRb.AddForce(totalForce, ForceMode.Impulse);
-        }
-
-        // Ses efekti
-        if (hitSound != null)
-            audioSource.PlayOneShot(hitSound);
-    }
-
-    // ==================== YARDIMCI ====================
-
-    void UpdateWheels()
-    {
-        bool moving = agent.velocity.magnitude > 0.5f || currentState == State.Dash;
-        float speed = currentState == State.Dash ? dashSpeed : agent.velocity.magnitude;
-
-        foreach (var w in wheels)
-        {
-            if (w != null)
-            {
-                w.SetMoving(moving);
-                w.SetSpeed(speed);
+                StopDashParticle();
+                // İsteğe bağlı: patlama efekti, destroy vs.
+                Destroy(gameObject, 3f);
             }
         }
-    }
 
-    void SetSiren(bool active)
-    {
-        if (sirenLight != null)
-            sirenLight.SetActive(active);
-    }
+        // ══════════════════════════════════════
+        //  ★ ALARM SİSTEMİ - ASKERLERLE ENTEGRE
+        // ══════════════════════════════════════
 
-    // Gizmos ile debug
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, dashTriggerRange);
+        void AlertNearbyEnemies()
+        {
+            if (alertSound != null)
+                _audio.PlayOneShot(alertSound);
+
+            Collider[] nearby = Physics.OverlapSphere(transform.position, alertRadius);
+            int count = 0;
+
+            foreach (var col in nearby)
+            {
+                if (col.gameObject == gameObject) continue;
+                if (!col.CompareTag("Enemy")) continue;
+
+                // ★ Diğer polis arabaları
+                var otherCar = col.GetComponent<PoliceCarEnemy>();
+                if (otherCar != null && otherCar != this)
+                {
+                    otherCar.ReceiveAlert(_player);
+                    count++;
+                    continue;
+                }
+
+                // ★ Asker düşmanlar (EnemyDetection sistemi)
+                var detection = col.GetComponent<EnemyDetection>();
+                if (detection != null)
+                {
+                    detection.ForceAlert(_player);
+                    count++;
+                    continue;
+                }
+
+                // Fallback: sadece NavMeshAgent varsa yönlendir
+                var agent = col.GetComponent<NavMeshAgent>();
+                if (agent != null && agent.isOnNavMesh)
+                {
+                    agent.SetDestination(_player.position);
+                    count++;
+                }
+            }
+
+            Debug.Log($"<color=cyan>[ALARM] {count} düşman uyarıldı! (Yarıçap: {alertRadius}m)</color>");
+        }
+
+        /// <summary>
+        /// Başka bir araba/düşmandan alarm alındığında
+        /// </summary>
+        public void ReceiveAlert(Transform target)
+        {
+            if (currentState == State.Dash || currentState == State.WindUp || currentState == State.Dead)
+                return;
+
+            _isAlerted = true;
+            _player = target;
+            ChangeState(State.Chase);
+            Debug.Log($"<color=cyan>[{gameObject.name}] Alarm aldı!</color>");
+        }
+
+        // ══════════════════════════════════════
+        //  YARDIMCI
+        // ══════════════════════════════════════
+
+        void FaceMovementDirection()
+        {
+            Vector3 vel = _agent.velocity;
+            vel.y = 0;
+            if (vel.magnitude < 0.5f) return;
+            transform.rotation = Quaternion.LookRotation(vel.normalized);
+        }
+
+        void UpdateWheels()
+        {
+            bool moving = (_agent.velocity.magnitude > 0.5f && !_agent.isStopped)
+                          || currentState == State.Dash;
+            float speed = currentState == State.Dash ? dashSpeed : _agent.velocity.magnitude;
+
+            foreach (var w in wheels)
+            {
+                if (w != null)
+                {
+                    w.SetMoving(moving);
+                    w.SetSpeed(speed);
+                }
+            }
+        }
+
+        void SetSiren(bool on)
+        {
+            if (sirenLight != null) sirenLight.SetActive(on);
+        }
+
+        void StopDashParticle()
+        {
+            if (dashParticle != null) dashParticle.Stop();
+        }
+
+        void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, detectionRange);
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, dashTriggerRange);
+
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(transform.position, alertRadius);
+
+            if (patrolPoints != null && patrolPoints.Length > 1)
+            {
+                Gizmos.color = Color.green;
+                for (int i = 0; i < patrolPoints.Length; i++)
+                {
+                    if (patrolPoints[i] == null) continue;
+                    int next = (i + 1) % patrolPoints.Length;
+                    if (patrolPoints[next] == null) continue;
+                    Gizmos.DrawLine(patrolPoints[i].position, patrolPoints[next].position);
+                }
+            }
+        }
     }
 }
