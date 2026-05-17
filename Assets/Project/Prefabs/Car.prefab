@@ -1,5 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+<<<<<<< HEAD
 --- !u!1 &3985099129175208144
 GameObject:
   m_ObjectHideFlags: 0
@@ -5141,6 +5142,9 @@ MonoBehaviour:
   flashSpeed: 4
   maxIntensity: 3
 --- !u!1001 &6495253413085930898
+=======
+--- !u!1001 &3785555794861828704
+>>>>>>> 19e2c0666de2efb7fd275f218ab247cb7beeecab
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -5150,6 +5154,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
       propertyPath: m_LocalPosition.x
+<<<<<<< HEAD
       value: -0.57853
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
@@ -5167,6 +5172,25 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
       propertyPath: m_LocalRotation.x
       value: -0.7071068
+=======
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+>>>>>>> 19e2c0666de2efb7fd275f218ab247cb7beeecab
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
       propertyPath: m_LocalRotation.y
@@ -5174,7 +5198,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
       propertyPath: m_LocalRotation.z
+<<<<<<< HEAD
       value: -0
+=======
+      value: 0
+>>>>>>> 19e2c0666de2efb7fd275f218ab247cb7beeecab
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5192,6 +5220,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: Car
       objectReference: {fileID: 0}
+<<<<<<< HEAD
     - target: {fileID: 919132149155446097, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
       propertyPath: m_TagString
       value: Enemy
@@ -5523,3 +5552,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WheelSpinner
   rotationAxis: 0
   spinMultiplier: 50
+=======
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f3383121fd513c04e8d6299619cc5959, type: 3}
+>>>>>>> 19e2c0666de2efb7fd275f218ab247cb7beeecab
