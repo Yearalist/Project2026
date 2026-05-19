@@ -11,6 +11,7 @@ namespace ToySiege.Player
 
         // ── Mouse (raw delta — hassasiyet PlayerConfig'de) ──
         public float MouseX { get; private set; }
+        public float MouseY { get; private set; }
 
         // ── Aksiyonlar ──
         public bool JumpPressed => ConsumeAction(ref _jumpPressed);
@@ -43,6 +44,7 @@ namespace ToySiege.Player
         {
             
             MouseX = Input.GetAxis("Mouse X");
+            MouseY = Input.GetAxis("Mouse Y");
         }
 
         private void ReadActions()

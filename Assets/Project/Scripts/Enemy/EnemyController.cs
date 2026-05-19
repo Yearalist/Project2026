@@ -9,7 +9,7 @@ namespace ToySiege.Enemy
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(EnemyDetection))]
     [RequireComponent(typeof(EnemyAnimator))]
-    public class EnemyController : MonoBehaviour
+    public class EnemyController : MonoBehaviour, ToySiege.Combat.IDamageable
     {
         [Header("Konfigürasyon")]
         [SerializeField] private EnemyConfig _config;
@@ -104,18 +104,18 @@ namespace ToySiege.Enemy
         }
 
         // ── Hasar ──
-        public void TakeDamage(float damage)
+        public void TakeDamage(float damage, Vector3 hitPoint, Vector3 hitDirection)
         {
             if (IsDead) return;
 
             CurrentHealth -= damage;
-            Debug.Log($"<color=orange>[Enemy] Hasar aldı: {damage} | Kalan HP: {CurrentHealth}</color>");
+            Debug.Log($"<color=orange>[Enemy] Hasar: {damage} | HP: {CurrentHealth}</color>");
 
             if (IsDead)
             {
                 Anim.TriggerDie();
                 Agent.enabled = false;
-                // 3 saniye sonra yok et
+                // Hit kuvveti uygula — ileride ragdoll bağlandığında ilk impulse
                 Destroy(gameObject, 3f);
             }
             else

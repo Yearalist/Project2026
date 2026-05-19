@@ -1,25 +1,11 @@
-﻿using UnityEngine;
+﻿using ToySiege.Player.Health;
+using UnityEngine;
 using UnityEngine.AI;
-using ToySiege.Player.Health;
 
 namespace ToySiege.Enemy
 {
-    /// <summary>
-    /// Polis arabası düşman AI v3 - ToySiege mimarisine entegre
-    /// 
-    /// ÖNCEKİ SORUNLAR:
-    /// 1) Araba askeler gibi takip etmiyordu → NavMeshAgent ile sürekli chase
-    /// 2) Alarm sistemi askerlere ulaşmıyordu → EnemyDetection.ForceAlert() kullanıyor
-    /// 3) Dash çok uzağa gidiyordu → oyuncuya kadar gidip duruyor
-    /// 4) Devriyede kayıyordu → keskin dönüş sistemi
-    /// 
-    /// KURULUM:
-    /// 1) Araba root objesine: NavMeshAgent, Rigidbody(Kinematic), BoxCollider(Trigger), Tag="Enemy"
-    /// 2) Bu scripti ekle, Inspector'dan ayarla
-    /// 3) EnemyDetection.cs'e ForceAlert() metodunu ekle (ayrı dosyada verildi)
-    /// </summary>
     [RequireComponent(typeof(NavMeshAgent))]
-    public class PoliceCarEnemy : MonoBehaviour
+    public class PoliceCarEnemy : MonoBehaviour, ToySiege.Combat.IDamageable
     {
         [Header("=== Referanslar ===")]
         public WheelSpinner[] wheels;
@@ -69,6 +55,9 @@ namespace ToySiege.Enemy
         // Durum
         public enum State { Patrol, TurnPause, Chase, WindUp, Dash, Cooldown, Dead }
         [HideInInspector] public State currentState = State.Patrol;
+
+        // ── IDamageable implementasyonu ──
+        public bool IsDead => _currentHealth <= 0f;
 
         // Private
         private NavMeshAgent _agent;
@@ -131,10 +120,8 @@ namespace ToySiege.Enemy
 
                 case State.Chase:
                     DoChase();
-                    // Oyuncuyu kaybettiyse ve alarm yoksa devriyeye dön
                     if (dist > loseRange && !_isAlerted)
                         ChangeState(State.Patrol);
-                    // Dash mesafesine girdiyse
                     else if (dist < dashTriggerRange)
                         ChangeState(State.WindUp);
                     break;
@@ -185,7 +172,6 @@ namespace ToySiege.Enemy
 
             if (_stateTimer <= 0f)
             {
-                // Sonraki noktaya anında dön
                 if (patrolPoints.Length > 0)
                 {
                     Vector3 dir = (patrolPoints[_patrolIndex].position - transform.position).normalized;
@@ -199,7 +185,6 @@ namespace ToySiege.Enemy
 
         void DoChase()
         {
-            // ★ Askerler gibi sürekli takip
             _agent.isStopped = false;
             _agent.speed = chaseSpeed;
             _agent.SetDestination(_player.position);
@@ -211,7 +196,6 @@ namespace ToySiege.Enemy
         {
             _agent.isStopped = true;
 
-            // Oyuncuya anında dön
             Vector3 lookDir = (_player.position - transform.position).normalized;
             lookDir.y = 0;
             if (lookDir.sqrMagnitude > 0.01f)
@@ -229,7 +213,6 @@ namespace ToySiege.Enemy
             Vector3 dirToTarget = (_dashTarget - transform.position);
             dirToTarget.y = 0;
 
-            // Hedefe ulaştıysa veya süre dolduysa dur
             if (dirToTarget.magnitude < dashStopDistance || _stateTimer <= 0f)
             {
                 ChangeState(State.Cooldown);
@@ -252,7 +235,6 @@ namespace ToySiege.Enemy
 
             if (_stateTimer <= 0f)
             {
-                // NavMesh'e geri snap
                 if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 10f, NavMesh.AllAreas))
                     _agent.Warp(hit.position);
 
@@ -267,7 +249,6 @@ namespace ToySiege.Enemy
 
         void ChangeState(State newState)
         {
-            // Aynı duruma tekrar girme
             if (currentState == newState) return;
 
             currentState = newState;
@@ -296,12 +277,18 @@ namespace ToySiege.Enemy
                 case State.Dash:
                     _stateTimer = dashMaxTime;
                     _hasHitThisDash = false;
-                    _dashTarget = _player.position; // Oyuncunun şu anki pozisyonu
+                    _dashTarget = _player.position;
                     if (dashParticle != null) dashParticle.Play();
                     break;
 
                 case State.Cooldown:
                     _stateTimer = dashCooldown;
+                    SetSiren(false);
+                    StopDashParticle();
+                    break;
+
+                case State.Dead:
+                    _agent.enabled = false;
                     SetSiren(false);
                     StopDashParticle();
                     break;
@@ -311,7 +298,35 @@ namespace ToySiege.Enemy
         }
 
         // ══════════════════════════════════════
-        //  ÇARPIŞMA & HASAR
+        //  IDamageable — HASAR ALMA
+        // ══════════════════════════════════════
+
+        public void TakeDamage(float damage, Vector3 hitPoint, Vector3 hitDirection)
+        {
+            if (IsDead) return;
+
+            _currentHealth -= damage;
+            Debug.Log($"<color=orange>[PoliceCar] Hasar: {damage} | HP: {_currentHealth}/{maxHealth}</color>");
+
+            if (IsDead)
+            {
+                ChangeState(State.Dead);
+
+                // Patlama efekti eklenebilir
+                Debug.Log("<color=red>[PoliceCar] YIKILDI!</color>");
+                Destroy(gameObject, 3f);
+            }
+            else
+            {
+                // Hasar aldığında alarm ver — etraftaki düşmanları uyar
+                _isAlerted = true;
+                if (currentState == State.Patrol || currentState == State.TurnPause)
+                    ChangeState(State.Chase);
+            }
+        }
+
+        // ══════════════════════════════════════
+        //  ÇARPIŞMA & OYUNCUYA HASAR
         // ══════════════════════════════════════
 
         void OnTriggerEnter(Collider other)
@@ -326,8 +341,6 @@ namespace ToySiege.Enemy
                 damage = dashDamage;
                 force = knockbackForce;
                 _hasHitThisDash = true;
-
-                // ★ ALARM: Etraftaki askerlere haber ver
                 AlertNearbyEnemies();
             }
             else
@@ -336,12 +349,10 @@ namespace ToySiege.Enemy
                 force = knockbackForce * 0.4f;
             }
 
-            // ★ Mevcut PlayerHealth sistemini kullan
             var health = other.GetComponent<PlayerHealth>();
             if (health != null)
                 health.TakeDamage(damage);
 
-            // Fırlatma
             var rb = other.GetComponent<Rigidbody>();
             if (rb != null)
             {
@@ -350,12 +361,9 @@ namespace ToySiege.Enemy
                 rb.AddForce(knockDir * force + Vector3.up * knockUpForce, ForceMode.Impulse);
             }
 
-            // CharacterController varsa (Rigidbody yerine)
             var cc = other.GetComponent<CharacterController>();
             if (cc != null && rb == null)
             {
-                // CharacterController'a force uygulayamayız,
-                // ama PlayerController'a stun/knockback sinyali gönderebiliriz
                 Debug.Log($"<color=red>[Car] Oyuncuya çarptı! Hasar: {damage}</color>");
             }
 
@@ -363,29 +371,8 @@ namespace ToySiege.Enemy
                 _audio.PlayOneShot(hitSound);
         }
 
-        /// <summary>
-        /// Araba hasar aldığında (oyuncu silahla vurursa)
-        /// </summary>
-        public void TakeDamage(float damage)
-        {
-            if (currentState == State.Dead) return;
-
-            _currentHealth -= damage;
-            Debug.Log($"<color=orange>[Car] Hasar: {damage} | HP: {_currentHealth}/{maxHealth}</color>");
-
-            if (_currentHealth <= 0f)
-            {
-                currentState = State.Dead;
-                _agent.enabled = false;
-                SetSiren(false);
-                StopDashParticle();
-                // İsteğe bağlı: patlama efekti, destroy vs.
-                Destroy(gameObject, 3f);
-            }
-        }
-
         // ══════════════════════════════════════
-        //  ★ ALARM SİSTEMİ - ASKERLERLE ENTEGRE
+        //  ALARM SİSTEMİ
         // ══════════════════════════════════════
 
         void AlertNearbyEnemies()
@@ -401,7 +388,6 @@ namespace ToySiege.Enemy
                 if (col.gameObject == gameObject) continue;
                 if (!col.CompareTag("Enemy")) continue;
 
-                // ★ Diğer polis arabaları
                 var otherCar = col.GetComponent<PoliceCarEnemy>();
                 if (otherCar != null && otherCar != this)
                 {
@@ -410,7 +396,6 @@ namespace ToySiege.Enemy
                     continue;
                 }
 
-                // ★ Asker düşmanlar (EnemyDetection sistemi)
                 var detection = col.GetComponent<EnemyDetection>();
                 if (detection != null)
                 {
@@ -419,7 +404,6 @@ namespace ToySiege.Enemy
                     continue;
                 }
 
-                // Fallback: sadece NavMeshAgent varsa yönlendir
                 var agent = col.GetComponent<NavMeshAgent>();
                 if (agent != null && agent.isOnNavMesh)
                 {
@@ -431,9 +415,6 @@ namespace ToySiege.Enemy
             Debug.Log($"<color=cyan>[ALARM] {count} düşman uyarıldı! (Yarıçap: {alertRadius}m)</color>");
         }
 
-        /// <summary>
-        /// Başka bir araba/düşmandan alarm alındığında
-        /// </summary>
         public void ReceiveAlert(Transform target)
         {
             if (currentState == State.Dash || currentState == State.WindUp || currentState == State.Dead)

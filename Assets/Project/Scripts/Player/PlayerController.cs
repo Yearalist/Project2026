@@ -34,11 +34,19 @@ namespace ToySiege.Player
         private float _targetYaw;
         private float _currentYaw;
         private float _yawSmoothVelocity;
+        private float _currentPitch; 
 
         // Yeni field'lar
         [Header("Kamera")]
+        
         [SerializeField] private Transform _cameraTarget;
         private Transform _modelHip;
+
+        [Header("Dikey Bakış")]
+        [SerializeField] private Transform _cameraPivot;      // Cinemachine'in takip ettiği nokta
+        [SerializeField] private float _pitchSensitivity = 200f;
+        [SerializeField] private float _minPitch = -60f;
+        [SerializeField] private float _maxPitch = 70f;
 
         public Transform CameraTarget => _cameraTarget;
 
@@ -146,6 +154,7 @@ namespace ToySiege.Player
         // ── Mouse Rotation ──
         public void HandleMouseRotation()
         {
+            // Yatay rotasyon (gövde döner)
             float mouseX = Input.MouseX;
             _targetYaw += mouseX * _config.MouseRotationSpeed * Time.fixedDeltaTime;
             _currentYaw = Mathf.SmoothDampAngle(
@@ -153,11 +162,20 @@ namespace ToySiege.Player
                 ref _yawSmoothVelocity, _config.RotationSmoothTime
             );
             transform.rotation = Quaternion.Euler(0f, _currentYaw, 0f);
+
+            // Dikey rotasyon (sadece kamera pivot döner)
+            if (_cameraPivot != null)
+            {
+                float mouseY = Input.MouseY;
+                _currentPitch -= mouseY * _pitchSensitivity * Time.fixedDeltaTime;
+                _currentPitch = Mathf.Clamp(_currentPitch, _minPitch, _maxPitch);
+                _cameraPivot.localRotation = Quaternion.Euler(_currentPitch, 0f, 0f);
+            }
         }
 
         // ── Hareket ──
 
-       
+
 
 
         public void HandleWalkMovement()

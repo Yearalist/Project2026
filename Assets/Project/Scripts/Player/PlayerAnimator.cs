@@ -9,6 +9,7 @@ namespace ToySiege.Player
         private Animator _animator;
         private bool _hasAnimator;
 
+
         // ── Parametre Hash'leri ──
         private static readonly int MoveX = Animator.StringToHash("moveX");
         private static readonly int MoveY = Animator.StringToHash("moveY");
