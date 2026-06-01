@@ -10,7 +10,9 @@ namespace ToySiege.Enemy.States
         public override void Enter()
         {
             Debug.Log("<color=orange>→ ENEMY: Chase</color>");
-            Ctx.Anim.SetCombatMode(true);     // ← dövüş pozisyonuna geç
+            Ctx.Anim.SetCombatMode(true);
+            // StoppingDistance'ı config'e ayarla (ranged = uzak, melee = yakın)
+            Ctx.Agent.stoppingDistance = Ctx.Config.StoppingDistance;
         }
 
         public override void Execute()

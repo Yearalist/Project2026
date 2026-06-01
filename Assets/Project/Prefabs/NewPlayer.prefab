@@ -4856,6 +4856,7 @@ GameObject:
   - component: {fileID: 7031933424447269733}
   - component: {fileID: 7885039386540806288}
   - component: {fileID: 5255557882611326839}
+  - component: {fileID: 8581485963535049637}
   m_Layer: 0
   m_Name: NewPlayer
   m_TagString: Player
@@ -4997,6 +4998,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Player.PlayerController
   _config: {fileID: 11400000, guid: 3790b3eb77c9bbf4987c48b057558177, type: 2}
   _cameraTarget: {fileID: 4261665013008718246}
+  _cameraPivot: {fileID: 0}
+  _pitchSensitivity: 200
+  _minPitch: -60
+  _maxPitch: 70
 --- !u!54 &8920328337190840940
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5125,6 +5130,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Player.Health.PlayerRagdoll
   _playerHealth: {fileID: 7031933424447269733}
   _animator: {fileID: 6769628362222061726}
+--- !u!114 &8581485963535049637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1487126693597171467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c81dd5b133a5b1f4eb0f22a941cd2919, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToySiege.UI.MinimapIcon
+  _iconPrefab: {fileID: 1968844657987685268, guid: 7d74e98d5e7c2b34faaadb6201eecdf3, type: 3}
+  _iconHeight: 10
+  _rotateWithParent: 1
 --- !u!1 &2202187269239876402
 GameObject:
   m_ObjectHideFlags: 0
@@ -34533,6 +34553,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: d1f8fd439552778478b09dc7551f4e34, type: 3}
       propertyPath: m_Name
       value: Character1@Idle
+      objectReference: {fileID: 0}
+    - target: {fileID: 2356525997145355668, guid: d1f8fd439552778478b09dc7551f4e34, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.009
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

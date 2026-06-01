@@ -5115,7 +5115,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b24862452f2f4248a2af504ef014566, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoliceCarEnemy
-  player: {fileID: 0}
   wheels:
   - {fileID: 5341498600866480806}
   - {fileID: 8103037795203872634}
@@ -5130,6 +5129,8 @@ MonoBehaviour:
   waypointThreshold: 2
   turnPauseTime: 0.3
   detectionRange: 2.64
+  loseRange: 35
+  chaseSpeed: 10
   dashTriggerRange: 9.97
   dashWindupTime: 0.8
   dashSpeed: 30
@@ -5141,7 +5142,7 @@ MonoBehaviour:
   knockbackForce: 20
   knockUpForce: 8
   alertRadius: 40
-  enemyTag: Enemy
+  maxHealth: 200
   dashParticle: {fileID: 5654770877291794416}
   sirenLight: {fileID: 3622826282670459128}
   dashHornSound: {fileID: 8300000, guid: 374c8b0f082b43549b1ff6585e7d5e74, type: 3}
@@ -5167,8 +5168,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 3.07, y: 1.09, z: 1.24}
+  m_Center: {x: 0, y: 0.52, z: 0}
 --- !u!54 &5674400660477518045
 Rigidbody:
   m_ObjectHideFlags: 0

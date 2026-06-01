@@ -1,11 +1,16 @@
+using System;
 using UnityEngine;
 
 namespace ToySiege.Player.Combat
 {
     public class PlayerCombat : MonoBehaviour
     {
+        /// <summary> ADS durumu deÄŸiÅŸtiÄŸinde (isAiming) </summary>
+        public event Action<bool> OnAimChanged;
+
         [SerializeField] private Weapon _currentWeapon;
-        [SerializeField] private float _combatExitDelay = 2f; // Son atýþtan 2sn sonra combat çýk
+        [SerializeField] private WeaponSwitcher _weaponSwitcher;
+        [SerializeField] private float _combatExitDelay = 2f;
 
         private static readonly int FireTrigger = Animator.StringToHash("Fire");
         private static readonly int IsCombat = Animator.StringToHash("isCombat");
@@ -13,10 +18,34 @@ namespace ToySiege.Player.Combat
         private Animator _baseAnimator;
         private float _lastFireTime = -999f;
         private bool _isInCombat;
+        private bool _isAiming;
+
+        public bool IsAiming => _isAiming;
 
         private void Awake()
         {
             _baseAnimator = GetComponentInChildren<Animator>();
+
+            // WeaponSwitcher varsa ondan aktif silahÄ± al
+            if (_weaponSwitcher == null)
+                _weaponSwitcher = GetComponentInChildren<WeaponSwitcher>();
+
+            if (_weaponSwitcher != null)
+            {
+                _currentWeapon = _weaponSwitcher.CurrentWeapon;
+                _weaponSwitcher.OnWeaponChanged += OnWeaponChanged;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (_weaponSwitcher != null)
+                _weaponSwitcher.OnWeaponChanged -= OnWeaponChanged;
+        }
+
+        private void OnWeaponChanged(Weapon newWeapon)
+        {
+            _currentWeapon = newWeapon;
         }
 
         private void Update()
@@ -33,7 +62,8 @@ namespace ToySiege.Player.Combat
             if (Input.GetKeyDown(KeyCode.R))
                 _currentWeapon.Reload();
 
-            // Combat modu otomatik çýkýþ
+            // ADS â€” saÄŸ tÄ±k
+            UpdateADS();
             UpdateCombatMode();
         }
 
@@ -44,7 +74,7 @@ namespace ToySiege.Player.Combat
             _currentWeapon.Fire();
             _lastFireTime = Time.time;
 
-            // Combat moduna gir (henüz deðilse)
+            // Combat moduna gir (henï¿½z deï¿½ilse)
             if (!_isInCombat)
             {
                 _isInCombat = true;
@@ -59,12 +89,27 @@ namespace ToySiege.Player.Combat
 
         private void UpdateCombatMode()
         {
-            // Son atýþtan _combatExitDelay saniye geçtiyse combat'tan çýk
+            // Son atï¿½ï¿½tan _combatExitDelay saniye geï¿½tiyse combat'tan ï¿½ï¿½k
             if (_isInCombat && Time.time - _lastFireTime > _combatExitDelay)
             {
                 _isInCombat = false;
                 if (_baseAnimator != null)
                     _baseAnimator.SetBool(IsCombat, false);
+            }
+        }
+
+        private void UpdateADS()
+        {
+            bool wantsAim = Input.GetMouseButton(1); // saÄŸ tÄ±k
+
+            if (wantsAim != _isAiming)
+            {
+                _isAiming = wantsAim;
+                OnAimChanged?.Invoke(_isAiming);
+
+                // FOV geÃ§iÅŸini GameFeelManager Ã¼zerinden yap (Ã§akÄ±ÅŸma olmasÄ±n)
+                if (GameFeelManager.Instance != null)
+                    GameFeelManager.Instance.SetAiming(_isAiming);
             }
         }
 

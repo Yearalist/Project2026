@@ -1,10 +1,20 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using ToySiege.Combat;
+using ToySiege.Core;
 
 namespace ToySiege.Player.Combat
 {
     public class Weapon : MonoBehaviour
     {
+        // ── Event'ler — UI bu event'leri dinleyecek ──
+        /// <summary> (currentAmmo, maxAmmo) </summary>
+        public event Action<int, int> OnAmmoChanged;
+        /// <summary> Ateş edildiğinde tetiklenir </summary>
+        public event Action OnFired;
+        /// <summary> IDamageable'a isabet ettiğinde (damage, worldPos) </summary>
+        public event Action<float, Vector3> OnHit;
+
         [Header("Ateş Ayarları")]
         [SerializeField] private float _damage = 25f;
         [SerializeField] private float _range = 100f;
@@ -25,6 +35,10 @@ namespace ToySiege.Player.Combat
         [SerializeField] private GameObject _impactEffectPrefab;
         [SerializeField] private TrailRenderer _bulletTrailPrefab;
 
+        [Header("Pool Ayarları")]
+        [SerializeField] private int _impactPoolSize = 10;
+        [SerializeField] private int _trailPoolSize = 10;
+
         [Header("Debug")]
         [SerializeField] private bool _showDebugRay = true;
 
@@ -35,6 +49,8 @@ namespace ToySiege.Player.Combat
         public float FireRate => _fireRate;
 
         private float _nextFireTime;
+        private ObjectPool _impactPool;
+        private ObjectPool _trailPool;
 
         private void Awake()
         {
@@ -45,6 +61,13 @@ namespace ToySiege.Player.Combat
                 Debug.LogError("[Weapon] Aim Camera bulunamadı! Camera.main null.");
             if (_muzzle == null)
                 Debug.LogError("[Weapon] Muzzle Transform atanmamış!");
+
+            // Object Pool'ları oluştur
+            if (_impactEffectPrefab != null)
+                _impactPool = new ObjectPool(_impactEffectPrefab, transform, _impactPoolSize);
+
+            if (_bulletTrailPrefab != null)
+                _trailPool = new ObjectPool(_bulletTrailPrefab.gameObject, transform, _trailPoolSize);
         }
 
         public bool CanFire() => Time.time >= _nextFireTime && HasAmmo;
@@ -55,6 +78,9 @@ namespace ToySiege.Player.Combat
 
             _nextFireTime = Time.time + _fireRate;
             CurrentAmmo--;
+
+            OnAmmoChanged?.Invoke(CurrentAmmo, _maxAmmo);
+            OnFired?.Invoke();
 
             if (_muzzleFlash != null) _muzzleFlash.Play();
 
@@ -82,6 +108,7 @@ namespace ToySiege.Player.Combat
                 {
                     Debug.Log($"<color=green>[Weapon] IDamageable bulundu! Hasar: {_damage}</color>");
                     damageable.TakeDamage(_damage, hit.point, ray.direction);
+                    OnHit?.Invoke(_damage, hit.point);
                 }
                 else
                 {
@@ -91,11 +118,11 @@ namespace ToySiege.Player.Combat
                 if (hit.rigidbody != null)
                     hit.rigidbody.AddForceAtPosition(ray.direction * _impactForce, hit.point);
 
-                if (_impactEffectPrefab != null)
+                if (_impactPool != null)
                 {
-                    GameObject impact = Instantiate(_impactEffectPrefab,
+                    GameObject impact = _impactPool.Get(
                         hit.point, Quaternion.LookRotation(hit.normal));
-                    Destroy(impact, 2f);
+                    StartCoroutine(ReturnToPool(_impactPool, impact, 2f));
                 }
             }
             else
@@ -111,28 +138,40 @@ namespace ToySiege.Player.Combat
 
         private void SpawnTrail(Vector3 from, Vector3 to)
         {
-            if (_bulletTrailPrefab == null) return;
+            if (_trailPool == null) return;
 
-            TrailRenderer trail = Instantiate(_bulletTrailPrefab, from, Quaternion.identity);
-            StartCoroutine(MoveTrail(trail, to));
+            GameObject trailObj = _trailPool.Get(from, Quaternion.identity);
+            TrailRenderer trail = trailObj.GetComponent<TrailRenderer>();
+            if (trail != null) trail.Clear();
+            StartCoroutine(MoveTrail(trailObj, trail, to));
         }
 
-        private System.Collections.IEnumerator MoveTrail(TrailRenderer trail, Vector3 target)
+        private System.Collections.IEnumerator MoveTrail(GameObject trailObj, TrailRenderer trail, Vector3 target)
         {
-            Vector3 start = trail.transform.position;
+            Vector3 start = trailObj.transform.position;
             float distance = Vector3.Distance(start, target);
             float speed = 120f;
             float t = 0f;
 
             while (t < 1f)
             {
-                trail.transform.position = Vector3.Lerp(start, target, t);
+                trailObj.transform.position = Vector3.Lerp(start, target, t);
                 t += Time.deltaTime * speed / distance;
                 yield return null;
             }
 
-            trail.transform.position = target;
-            Destroy(trail.gameObject, trail.time);
+            trailObj.transform.position = target;
+
+            // Trail'in sönmesini bekle, sonra havuza geri koy
+            float waitTime = trail != null ? trail.time : 0.5f;
+            yield return new WaitForSeconds(waitTime);
+            _trailPool.Return(trailObj);
+        }
+
+        private System.Collections.IEnumerator ReturnToPool(ObjectPool pool, GameObject obj, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            pool.Return(obj);
         }
 
         public void Reload()

@@ -42,6 +42,7 @@ namespace ToySiege.Player
 
         [Header("Cinemachine")]
         [SerializeField] private Unity.Cinemachine.CinemachineImpulseSource _impulseSource;
+        [SerializeField] private Unity.Cinemachine.CinemachineCamera _cinemachineCamera;
 
         [Header("Sprint Kamera")]
         [SerializeField] private float _sprintTargetFOV = 68f;
@@ -62,6 +63,10 @@ namespace ToySiege.Player
         {
             Instance = this;
             _cam = Camera.main;
+
+            // CinemachineCamera otomatik bul
+            if (_cinemachineCamera == null)
+                _cinemachineCamera = FindFirstObjectByType<Unity.Cinemachine.CinemachineCamera>();
 
             // Post-process override'ları bul
             if (_postProcessVolume != null && _postProcessVolume.profile != null)
@@ -147,10 +152,7 @@ namespace ToySiege.Player
             if (_slideSpeedLines != null) _slideSpeedLines.Play();
 
             // FOV artışı
-            _fovTween?.Kill();
-            if (_cam != null)
-                _fovTween = _cam.DOFieldOfView(_slideTargetFOV, _fovSpeed)
-                    .SetEase(Ease.OutBack);
+            AnimateFOV(_slideTargetFOV, _fovSpeed, Ease.OutBack);
 
             // Vignette — tünel görüşü
             _vignetteTween?.Kill();
@@ -179,10 +181,7 @@ namespace ToySiege.Player
             if (_slideSpeedLines != null) _slideSpeedLines.Stop();
 
             // FOV normale
-            _fovTween?.Kill();
-            if (_cam != null)
-                _fovTween = _cam.DOFieldOfView(_normalFOV, _fovSpeed * 1.5f)
-                    .SetEase(Ease.InOutQuad);
+            AnimateFOV(_normalFOV, _fovSpeed * 1.5f, Ease.InOutQuad);
 
             // Vignette sıfırla
             _vignetteTween?.Kill();
@@ -224,6 +223,35 @@ namespace ToySiege.Player
                 });
         }
 
+        /// <summary>
+        /// FOV'u Cinemachine üzerinden değiştirir.
+        /// Cinemachine yoksa fallback olarak Camera.fieldOfView kullanır.
+        /// </summary>
+        private void AnimateFOV(float targetFOV, float duration, Ease ease = Ease.OutQuad)
+        {
+            _fovTween?.Kill();
+
+            if (_cinemachineCamera != null)
+            {
+                // Cinemachine 3.x — Lens.FieldOfView üzerinden
+                _fovTween = DOTween.To(
+                    () => _cinemachineCamera.Lens.FieldOfView,
+                    x =>
+                    {
+                        var lens = _cinemachineCamera.Lens;
+                        lens.FieldOfView = x;
+                        _cinemachineCamera.Lens = lens;
+                    },
+                    targetFOV,
+                    duration
+                ).SetEase(ease);
+            }
+            else if (_cam != null)
+            {
+                _fovTween = _cam.DOFieldOfView(targetFOV, duration).SetEase(ease);
+            }
+        }
+
         private void FlashChromatic(float intensity, float duration)
         {
             if (_chromatic == null) return;
@@ -247,21 +275,52 @@ namespace ToySiege.Player
 
         public void OnSprintStart()
         {
-            _fovTween?.Kill();
-            if (_cam != null)
-                _fovTween = _cam.DOFieldOfView(_sprintTargetFOV, 0.3f)
-                    .SetEase(Ease.OutQuad);
+            if (_isAiming) return; // ADS aktifse sprint FOV uygulanmasın
+
+            AnimateFOV(_sprintTargetFOV, 0.3f);
         }
 
         public void OnSprintEnd()
         {
+            if (_isAiming) return; // ADS aktifse sprint FOV reset yapmasın
+
             // Slide aktifse dokunma
             if (_slideSpeedLines != null && _slideSpeedLines.isPlaying) return;
 
-            _fovTween?.Kill();
-            if (_cam != null)
-                _fovTween = _cam.DOFieldOfView(_normalFOV, 0.4f)
-                    .SetEase(Ease.InOutQuad);
+            AnimateFOV(_normalFOV, 0.4f, Ease.InOutQuad);
+        }
+
+        // ══════════════════════════════
+        //  ADS (Nişan Alma)
+        // ══════════════════════════════
+
+        [Header("ADS")]
+        [SerializeField] private float _adsFOV = 40f;
+        [SerializeField] private float _adsTransitionSpeed = 0.15f;
+
+        private bool _isAiming;
+
+        /// <summary>
+        /// PlayerCombat tarafından çağrılır.
+        /// </summary>
+        public void SetAiming(bool aiming)
+        {
+            _isAiming = aiming;
+
+            float targetFOV = aiming ? _adsFOV : _normalFOV;
+            AnimateFOV(targetFOV, _adsTransitionSpeed, aiming ? Ease.OutQuad : Ease.InOutQuad);
+
+            // ADS sırasında vignette efekti
+            _vignetteTween?.Kill();
+            if (_vignette != null)
+            {
+                _vignetteTween = DOTween.To(
+                    () => _vignette.intensity.value,
+                    x => _vignette.intensity.Override(x),
+                    aiming ? 0.25f : 0f,
+                    _adsTransitionSpeed
+                ).SetEase(Ease.OutQuad);
+            }
         }
     }
 }

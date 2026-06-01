@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.AI;
 using ToySiege.Core.FSM;
 using ToySiege.Enemy.Data;
@@ -11,6 +12,12 @@ namespace ToySiege.Enemy
     [RequireComponent(typeof(EnemyAnimator))]
     public class EnemyController : MonoBehaviour, ToySiege.Combat.IDamageable
     {
+        // ── Event'ler — UI ve efektler bunları dinleyecek ──
+        /// <summary> Hasar alındığında (damage, hitPoint) </summary>
+        public event Action<float, Vector3> OnDamaged;
+        /// <summary> Öldüğünde (worldPosition) </summary>
+        public event Action<Vector3> OnDied;
+
         [Header("Konfigürasyon")]
         [SerializeField] private EnemyConfig _config;
 
@@ -74,7 +81,7 @@ namespace ToySiege.Enemy
         // ── Hareket ──
         public void ChaseTarget()
         {
-            if (Detection.HasTarget)
+            if (Detection.HasTarget && Agent.isOnNavMesh)
             {
                 Agent.speed = _config.ChaseSpeed;
                 Agent.SetDestination(Detection.Target.position);
@@ -111,12 +118,28 @@ namespace ToySiege.Enemy
             CurrentHealth -= damage;
             Debug.Log($"<color=orange>[Enemy] Hasar: {damage} | HP: {CurrentHealth}</color>");
 
+            OnDamaged?.Invoke(damage, hitPoint);
+
             if (IsDead)
             {
-                Anim.TriggerDie();
-                Agent.enabled = false;
-                // Hit kuvveti uygula — ileride ragdoll bağlandığında ilk impulse
-                Destroy(gameObject, 3f);
+                OnDied?.Invoke(transform.position);
+
+                // Skor sistemi bildir
+                if (Core.ScoreManager.Instance != null)
+                    Core.ScoreManager.Instance.AddKill();
+
+                // Ragdoll varsa aktif et, yoksa animasyon + destroy
+                var ragdoll = GetComponent<EnemyRagdoll>();
+                if (ragdoll != null)
+                {
+                    ragdoll.ActivateRagdoll(hitPoint, hitDirection);
+                }
+                else
+                {
+                    Anim.TriggerDie();
+                    Agent.enabled = false;
+                    Destroy(gameObject, 3f);
+                }
             }
             else
             {
@@ -127,7 +150,7 @@ namespace ToySiege.Enemy
         // ── Patrol ──
         public Vector3 GetRandomPatrolPoint()
         {
-            Vector3 randomDir = Random.insideUnitSphere * _config.PatrolRadius;
+            Vector3 randomDir = UnityEngine.Random.insideUnitSphere * _config.PatrolRadius;
             randomDir += transform.position;
 
             if (NavMesh.SamplePosition(randomDir, out NavMeshHit hit, _config.PatrolRadius, NavMesh.AllAreas))

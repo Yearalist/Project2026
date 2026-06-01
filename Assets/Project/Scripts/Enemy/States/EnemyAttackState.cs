@@ -17,8 +17,15 @@ namespace ToySiege.Enemy.States
             Ctx.LookAtTarget();
             _timer = Ctx.Config.AttackDuration;
 
-            if (Ctx.Detection.IsInAttackRange)
+            // Projectile attack component varsa uzak mesafe saldırısı yap
+            var rangedAttack = Ctx.GetComponent<EnemyProjectileAttack>();
+            if (rangedAttack != null)
             {
+                rangedAttack.FireProjectile();
+            }
+            else if (Ctx.Detection.IsInAttackRange)
+            {
+                // Yakın dövüş — eski davranış
                 var playerHealth = Ctx.Detection.Target
                     .GetComponent<ToySiege.Player.Health.PlayerHealth>();
 

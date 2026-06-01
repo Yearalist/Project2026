@@ -12,6 +12,10 @@ namespace ToySiege.Enemy
         private bool _isAlerted = false;
         public bool IsAlerted => _isAlerted;
 
+        // Oyuncu arama throttle — her frame FindGameObjectWithTag çağırmayı önler
+        private float _findPlayerInterval = 1f;
+        private float _findPlayerTimer;
+
         public Transform Target => _target;
         public bool HasTarget => _target != null;
         public float DistanceToTarget { get; private set; }
@@ -22,12 +26,23 @@ namespace ToySiege.Enemy
         public void Initialize(EnemyConfig config)
         {
             _config = config;
+
+            // İlk başta bir kez oyuncuyu bulmaya çalış
+            TryFindPlayer();
         }
 
         private void Update()
         {
             if (_target == null)
-                TryFindPlayer();
+            {
+                // Throttle: her frame yerine belirli aralıklarla ara
+                _findPlayerTimer -= Time.deltaTime;
+                if (_findPlayerTimer <= 0f)
+                {
+                    TryFindPlayer();
+                    _findPlayerTimer = _findPlayerInterval;
+                }
+            }
 
             if (_target != null)
                 DistanceToTarget = Vector3.Distance(transform.position, _target.position);

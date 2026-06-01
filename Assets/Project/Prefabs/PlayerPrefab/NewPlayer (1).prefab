@@ -9893,6 +9893,7 @@ GameObject:
   - component: {fileID: 2034958951562308812}
   - component: {fileID: 4403046264532719944}
   - component: {fileID: 4529159391233506403}
+  - component: {fileID: 786646257145041047}
   m_Layer: 0
   m_Name: NewPlayer (1)
   m_TagString: Player
@@ -9978,7 +9979,10 @@ MonoBehaviour:
   _slideVignetteIntensity: 0.45
   _slideChromaticAberration: 0.5
   _impulseSource: {fileID: 4437941131605897496}
+  _cinemachineCamera: {fileID: 0}
   _sprintTargetFOV: 68
+  _adsFOV: 40
+  _adsTransitionSpeed: 0.15
 --- !u!114 &7005328349869939749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10034,6 +10038,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Player.PlayerController
   _config: {fileID: 11400000, guid: 3790b3eb77c9bbf4987c48b057558177, type: 2}
   _cameraTarget: {fileID: 5560124495579579436}
+  _cameraPivot: {fileID: 0}
+  _pitchSensitivity: 200
+  _minPitch: -60
+  _maxPitch: 70
 --- !u!54 &320726899300551871
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10175,7 +10183,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToySiege.Player.Combat.PlayerCombat
   _currentWeapon: {fileID: 4096564062435732347}
-  _animator: {fileID: 7005328349869939749}
+  _weaponSwitcher: {fileID: 0}
+  _combatExitDelay: 2
+--- !u!114 &786646257145041047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2329256682062363298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c81dd5b133a5b1f4eb0f22a941cd2919, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToySiege.UI.MinimapIcon
+  _iconPrefab: {fileID: 0}
+  _iconHeight: 2
+  _iconScale: 3
+  _rotateWithParent: 1
+  _iconColor: {r: 0, g: 0.253304, b: 1, a: 1}
+  _minimapLayerName: Minimap
 --- !u!1 &2639756834232121123
 GameObject:
   m_ObjectHideFlags: 0
@@ -34714,6 +34741,8 @@ MonoBehaviour:
   _muzzleFlash: {fileID: 0}
   _impactEffectPrefab: {fileID: 9140804131022111066, guid: 43c698afea472834599bb47d7862ae9e, type: 3}
   _bulletTrailPrefab: {fileID: 7323809080791658017}
+  _impactPoolSize: 10
+  _trailPoolSize: 10
   _showDebugRay: 1
 --- !u!1001 &3221779754982142023
 PrefabInstance:
