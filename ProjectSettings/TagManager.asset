@@ -5,16 +5,18 @@ TagManager:
   serializedVersion: 3
   tags:
   - Enemy
+  - Door
+  - Duvar
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Duvar
   - Water
   - UI
   - Enemy
   - Minimap
-  - 
+  - Door
   - 
   - 
   - 
