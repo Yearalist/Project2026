@@ -78,7 +78,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _Color: {r: 4.9551992, g: 1.822288, b: 0, a: 1}
+    - _Color: {r: 4.187318, g: 0.1885062, b: 0.15011081, a: 1}
     - _Texture_1_Tiling: {r: 1.08, g: 1, b: 0, a: 0}
     - _Texture_2_Tiling: {r: 2, g: 2, b: 0, a: 0}
     - _Tiling: {r: 4, g: 1, b: 0, a: 0}
