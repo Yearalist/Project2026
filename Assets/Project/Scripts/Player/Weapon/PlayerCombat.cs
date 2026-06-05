@@ -19,7 +19,6 @@ namespace ToySiege.Player.Combat
         private float _lastFireTime = -999f;
         private bool _isInCombat;
         private bool _isAiming;
-        private bool _isDead;
 
         public bool IsAiming => _isAiming;
 
@@ -36,41 +35,12 @@ namespace ToySiege.Player.Combat
                 _currentWeapon = _weaponSwitcher.CurrentWeapon;
                 _weaponSwitcher.OnWeaponChanged += OnWeaponChanged;
             }
-
-            // Ölüm event'ini dinle
-            var health = GetComponent<Health.PlayerHealth>();
-            if (health == null)
-                health = GetComponentInParent<Health.PlayerHealth>();
-
-            if (health != null)
-                health.OnDeath += HandleDeath;
         }
 
         private void OnDestroy()
         {
             if (_weaponSwitcher != null)
                 _weaponSwitcher.OnWeaponChanged -= OnWeaponChanged;
-
-            var health = GetComponent<Health.PlayerHealth>();
-            if (health == null)
-                health = GetComponentInParent<Health.PlayerHealth>();
-
-            if (health != null)
-                health.OnDeath -= HandleDeath;
-        }
-
-        private void HandleDeath()
-        {
-            _isDead = true;
-
-            // ADS'i kapat
-            if (_isAiming)
-            {
-                _isAiming = false;
-                OnAimChanged?.Invoke(false);
-                if (GameFeelManager.Instance != null)
-                    GameFeelManager.Instance.SetAiming(false);
-            }
         }
 
         private void OnWeaponChanged(Weapon newWeapon)
@@ -80,7 +50,6 @@ namespace ToySiege.Player.Combat
 
         private void Update()
         {
-            if (_isDead) return;
             if (_currentWeapon == null) return;
 
             bool firePressed = _currentWeapon.IsAutomatic
