@@ -5145,7 +5145,7 @@ MonoBehaviour:
   maxHealth: 200
   dashParticle: {fileID: 5654770877291794416}
   sirenLight: {fileID: 3622826282670459128}
-  dashHornSound: {fileID: 8300000, guid: 374c8b0f082b43549b1ff6585e7d5e74, type: 3}
+  dashHornSound: {fileID: 0}
   hitSound: {fileID: 8300000, guid: 7d775f8b371f76240a95506e15494878, type: 3}
   alertSound: {fileID: 0}
   currentState: 0
